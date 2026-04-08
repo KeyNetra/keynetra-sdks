@@ -6,6 +6,6 @@ generateInterfaces: true
 hideGenerationTimestamp: true
 withGoMod: true
 packageDescription: "Official Go Client SDK for KeyNetra authorization platform."
-packageAuthor: "KeyNetra Engineering"
+packageAuthor: "KeyNetra"
 packageEmail: "business.keynetra@gmail.com"
 packageUrl: "https://github.com/keynetra/keynetra-client-go"

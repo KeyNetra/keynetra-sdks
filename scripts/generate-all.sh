@@ -61,7 +61,6 @@ generate_sdk() {
     -g "${generator}" \
     -o "${output_dir}" \
     -c "${config_file}" \
-    --type-mappings=null=interface{},Any=interface{},object=interface{} \
     --skip-validate-spec > "${log_file}" 2>&1; then
     log_success "${name} SDK generated successfully."
     rm -f "${log_file}"
@@ -101,6 +100,35 @@ generate_sdk_python() {
   fi
 }
 
+generate_sdk_go() {
+  local generator="go"
+  local output_dir="${ROOT_DIR}/sdks/go"
+  local config_file="${ROOT_DIR}/templates/go-config.yaml"
+  local name="Go"
+  local log_file="${ROOT_DIR}/sdks/gen-Go.log"
+
+  log_step "Generating ${name} SDK..."
+  rm -rf "${output_dir}"
+  mkdir -p "${output_dir}"
+
+  # Go-specific mappings and flags to handle anyOf and untyped fields
+  if openapi-generator-cli generate \
+    -i "${SPEC_FILE}" \
+    -g "${generator}" \
+    -o "${output_dir}" \
+    -c "${config_file}" \
+    --type-mappings=null=any,Any=any,object=any,AnyOfstringinteger=any \
+    --skip-validate-spec > "${log_file}" 2>&1; then
+    log_success "${name} SDK generated successfully."
+    rm -f "${log_file}"
+  else
+    log_error "Failed to generate ${name} SDK. See details below:"
+    cat "${log_file}"
+    rm -f "${log_file}"
+    return 1
+  fi
+}
+
 # --- Execution ---
 echo -e "${YELLOW}${ROCKET}  Starting KeyNetra SDK Generation v${SDK_VERSION}${NC}"
 
@@ -113,7 +141,7 @@ FAIL=0
 
 (generate_sdk_python) || FAIL=1 &
 (generate_sdk typescript-fetch "${ROOT_DIR}/sdks/typescript" "${ROOT_DIR}/templates/typescript-config.yaml" "TypeScript") || FAIL=1 &
-(generate_sdk go "${ROOT_DIR}/sdks/go" "${ROOT_DIR}/templates/go-config.yaml" "Go") || FAIL=1 &
+(generate_sdk_go) || FAIL=1 &
 (generate_sdk java "${ROOT_DIR}/sdks/java" "${ROOT_DIR}/templates/java-config.yaml" "Java") || FAIL=1 &
 (generate_sdk rust "${ROOT_DIR}/sdks/rust" "${ROOT_DIR}/templates/rust-config.yaml" "Rust") || FAIL=1 &
 (generate_sdk csharp "${ROOT_DIR}/sdks/csharp" "${ROOT_DIR}/templates/csharp-config.yaml" "C#") || FAIL=1 &

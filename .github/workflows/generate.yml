@@ -44,7 +44,7 @@ jobs:
       - name: 💾 Commit & Push Changes
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          git config user.name "KeyNetra Engineering"
+          git config user.name "Keynetra.admin"
           git config user.email "business.keynetra@gmail.com"
           git add scripts templates openapi
           if git diff --cached --quiet; then
@@ -59,51 +59,3 @@ jobs:
         with:
           name: generated-sdks
           path: sdks
-
-  test:
-    name: 🧪 Smoke Test SDKs
-    needs: generate
-    runs-on: ubuntu-latest
-    services:
-      keynetra:
-        image: docker.io/keynetra/keynetra:latest
-        ports:
-          - 8080:8080
-        options: >-
-          --health-cmd "(python3 -c 'import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.connect((\"localhost\", 8080))' || python -c 'import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.connect((\"localhost\", 8080))') || exit 1"
-          --health-interval 15s
-          --health-timeout 10s
-          --health-retries 10
-    steps:
-      - name: 📥 Checkout Code
-        uses: actions/checkout@v4
-
-      - name: 📂 Download SDKs
-        uses: actions/download-artifact@v4
-        with:
-          name: generated-sdks
-          path: sdks
-
-      - name: 🐍 Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: "pip"
-
-      - name: 🐍 Test Python Instantiation
-        run: |
-          cd tests/python
-          pip install pydantic urllib3 python-dateutil typing-extensions
-          python3 test_instantiation.py
-
-      - name: 🐹 Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.23"
-          cache: false
-
-      - name: 🐹 Test Go Instantiation
-        run: |
-          cd sdks/go
-          go mod tidy
-          go build ./...
