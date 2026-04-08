@@ -2,8 +2,8 @@
 readme = "README.md"
 name = "keynetra-client"
 version = "0.1.0"
-authors = ["KeyNetra Engineering <business.keynetra@gmail.com>"]
-description = "Official Rust SDK for the KeyNetra authorization platform."
+authors = ["KeyNetra <business.keynetra@gmail.com>"]
+description = "Official Rust Client SDK for the KeyNetra authorization platform."
 # Override this license by providing a License Object in the OpenAPI.
 license = "Apache-2.0"
 edition = "2021"

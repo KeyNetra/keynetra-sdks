@@ -7,7 +7,7 @@
     <name>keynetra-client</name>
     <version>0.1.0</version>
     <url>https://github.com/openapitools/openapi-generator</url>
-    <description>Official Java SDK for the KeyNetra authorization platform.</description>
+    <description>Official Java Client SDK for the KeyNetra authorization platform.</description>
     <scm>
         <connection>scm:git:git://github.com/keynetra/keynetra-client-java.git</connection>
         <developerConnection>scm:git:ssh://github.com:keynetra/keynetra-client-java.git</developerConnection>
@@ -24,7 +24,7 @@
 
     <developers>
         <developer>
-            <name>KeyNetra Engineering</name>
+            <name>Sainath Sapa</name>
             <email>business.keynetra@gmail.com</email>
             <organization>KeyNetra</organization>
             <organizationUrl>https://keynetra.com</organizationUrl>

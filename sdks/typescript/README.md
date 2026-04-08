@@ -4,7 +4,7 @@
 [![Version](https://img.shields.io/badge/version-0.1.0-green.svg)]()
 [![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://docs.keynetra.com/sdks/typescript)
 
-Official TypeScript SDK for the [KeyNetra](https://keynetra.com) authorization platform. 🛡️
+Official TypeScript Client SDK for the [KeyNetra](https://keynetra.com) authorization platform. 🛡️
 
 KeyNetra provides high-performance, distributed authorization as a service. This SDK allows your TypeScript applications to integrate seamlessly with KeyNetra for access control and policy management.
 

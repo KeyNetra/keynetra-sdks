@@ -4,7 +4,7 @@ set -euo pipefail
 # --- Configuration ---
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SPEC_FILE="${ROOT_DIR}/openapi/keynetra.yaml"
-SDK_VERSION="${SDK_VERSION:-0.1.0}"
+SDK_VERSION="${SDK_VERSION:-0.1.1}"
 
 # --- Colors & Emojis ---
 RED='\033[0;31m'

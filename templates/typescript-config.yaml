@@ -1,12 +1,12 @@
 npmName: "@keynetra/client"
-npmVersion: 0.1.0
+npmVersion: 0.1.1
 supportsES6: true
 typescriptThreePlus: true
 withInterfaces: true
 useSingleRequestParameter: true
 enumNameSuffix: Enum
 packageDescription: Official TypeScript SDK for the KeyNetra authorization platform.
-authorName: KeyNetra Engineering
+authorName: KeyNetra
 authorEmail: business.keynetra@gmail.com
 packageRepository: https://github.com/keynetra/keynetra-client-typescript
 packageLicense: Apache-2.0

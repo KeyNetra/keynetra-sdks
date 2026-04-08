@@ -2,8 +2,8 @@ projectName: KeyNetraClient
 podName: KeyNetraClient
 moduleName: KeyNetraClient
 hideGenerationTimestamp: true
-podAuthors: KeyNetra Engineering
-podSummary: Official Swift SDK for the KeyNetra authorization platform.
+podAuthors: KeyNetra
+podSummary: Official Swift Client SDK for the KeyNetra authorization platform.
 podDescription: "KeyNetra provides high-performance, distributed authorization as a service. This SDK allows Swift applications to integrate with KeyNetra for access control."
 podHomepage: https://keynetra.com
 podSource: https://github.com/keynetra/keynetra-client-swift

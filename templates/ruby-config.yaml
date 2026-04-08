@@ -1,9 +1,9 @@
 gemName: keynetra-client
 moduleName: KeyNetra
-gemVersion: 0.1.0
+gemVersion: 0.1.1
 hideGenerationTimestamp: true
-gemAuthor: KeyNetra Engineering
-gemAuthorEmail: business.keynetra@gmail.com
+gemAuthor: SainathSapa
+gemAuthorEmail: info.djsai@gmail.com
 gemDescription: Official Ruby SDK for the KeyNetra authorization platform.
 gemHomepage: https://github.com/keynetra/keynetra-client-ruby
 gemLicense: Apache-2.0

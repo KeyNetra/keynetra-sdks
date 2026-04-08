@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SDK_VERSION="${SDK_VERSION:-0.1.0}"
+SDK_VERSION="${SDK_VERSION:-0.1.1}"
 
 # --- Colors & Emojis ---
 GREEN='\033[0;32m'
@@ -32,7 +32,7 @@ generate_readme() {
 [![Version](https://img.shields.io/badge/version-${SDK_VERSION}-green.svg)]()
 [![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](${docs_url})
 
-Official ${lang_name} SDK for the [KeyNetra](https://keynetra.com) authorization platform. 🛡️
+Official ${lang_name} Client SDK for the [KeyNetra](https://keynetra.com) authorization platform. 🛡️
 
 KeyNetra provides high-performance, distributed authorization as a service. This SDK allows your ${lang_name} applications to integrate seamlessly with KeyNetra for access control and policy management.
 
@@ -98,11 +98,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "keynetra-client"
 version = "${SDK_VERSION}"
-description = "Official Python SDK for the KeyNetra authorization platform."
+description = "Official Python Client SDK for the KeyNetra authorization platform."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Apache-2.0" }
-authors = [{ name = "KeyNetra Engineering", email = "business.keynetra@gmail.com" }]
+authors = [{ name = "Sainath.Sapa", email = "info.djsai@gmail.com" }]
 dependencies = ["urllib3>=2"]
 
 [project.urls]
@@ -173,7 +173,7 @@ const decision = await client.access.checkAccess({
 {
   "name": "@keynetra/client",
   "version": "${SDK_VERSION}",
-  "description": "Official TypeScript SDK for the KeyNetra authorization platform.",
+  "description": "Official TypeScript Client SDK for the KeyNetra authorization platform.",
   "license": "Apache-2.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -184,7 +184,7 @@ const decision = await client.access.checkAccess({
     "src",
     "README.md"
   ],
-  "author": "KeyNetra Engineering <business.keynetra@gmail.com>",
+  "author": "KeyNetra <business.keynetra@gmail.com>",
   "repository": {
     "type": "git",
     "url": "git+${repo_url}.git"
@@ -391,14 +391,12 @@ let decision = client.access()
 
   # Fix Cargo.toml metadata
   if [ -f "${ROOT_DIR}/sdks/rust/Cargo.toml" ]; then
-    sed -i '' "s/description = .*/description = \"Official Rust SDK for the KeyNetra authorization platform.\"/" "${ROOT_DIR}/sdks/rust/Cargo.toml"
-    sed -i '' "s/license = .*/license = \"Apache-2.0\"/" "${ROOT_DIR}/sdks/rust/Cargo.toml"
-    sed -i '' "s/authors = .*/authors = [\"KeyNetra Engineering <business.keynetra@gmail.com>\"]/" "${ROOT_DIR}/sdks/rust/Cargo.toml"
+    perl -i -pe "s/description = .*/description = \"Official Rust Client SDK for the KeyNetra authorization platform.\"/g" "${ROOT_DIR}/sdks/rust/Cargo.toml"
+    perl -i -pe "s/license = .*/license = \"Apache-2.0\"/g" "${ROOT_DIR}/sdks/rust/Cargo.toml"
+    perl -i -pe "s/authors = .*/authors = [\"KeyNetra <business.keynetra\@gmail.com>\"]/g" "${ROOT_DIR}/sdks/rust/Cargo.toml"
     # Add readme field if missing
     if ! grep -q "readme =" "${ROOT_DIR}/sdks/rust/Cargo.toml"; then
-      sed -i '' "/\[package\]/a\\
-readme = \"README.md\"
-" "${ROOT_DIR}/sdks/rust/Cargo.toml"
+      perl -i -pe 's/^\[package\]/\[package\]\nreadme = \"README.md\"/' "${ROOT_DIR}/sdks/rust/Cargo.toml"
     fi
   fi
 
@@ -462,15 +460,12 @@ var decision = await client.Access.CheckAccessAsync(new AccessRequest {
 
   # Fix .csproj metadata
   if [ -f "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj" ]; then
-    sed -i '' "s|<RepositoryUrl>.*</RepositoryUrl>|<RepositoryUrl>${repo_url}.git</RepositoryUrl>|" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+    perl -i -pe "s|<RepositoryUrl>.*</RepositoryUrl>|<RepositoryUrl>${repo_url}.git</RepositoryUrl>|g" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+    perl -i -pe "s|<Authors>.*</Authors>|<Authors>KeyNetra</Authors>|g" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
     if ! grep -q "<PackageReadmeFile>" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"; then
-      sed -i '' "/<\/PackageTags>/a\\
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+      perl -i -pe 's/(<\/PackageTags>)/$1\n    <PackageReadmeFile>README.md<\/PackageReadmeFile>/g' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
       # Also need to include the README file in the package
-      sed -i '' "/<\/ItemGroup>/i\\
-    <None Include=\"README.md\" Pack=\"true\" PackagePath=\"\\\\\"/>
-" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+      perl -i -pe 's/(<\/ItemGroup>)/    <None Include=\"README.md\" Pack=\"true\" PackagePath=\"\\\\\"\/>\n$1/g' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
     fi
   fi
 
@@ -541,7 +536,9 @@ decision = client.access_api.check_access(...)" "${repo_url}" "${docs_url}" > "$
 
   # Fix .gemspec metadata
   if [ -f "${ROOT_DIR}/sdks/ruby/keynetra-client.gemspec" ]; then
-    sed -i '' "s/s.summary     = .*/s.summary     = \"Official Ruby SDK for the KeyNetra authorization platform.\"/" "${ROOT_DIR}/sdks/ruby/keynetra-client.gemspec"
+    perl -i -pe "s/s.summary     = .*/s.summary     = \"Official Ruby Client SDK for the KeyNetra authorization platform.\"/g" "${ROOT_DIR}/sdks/ruby/keynetra-client.gemspec"
+    perl -i -pe "s/s.authors     = .*/s.authors     = [\"SainathSapa\"]/g" "${ROOT_DIR}/sdks/ruby/keynetra-client.gemspec"
+    perl -i -pe "s/s.email       = .*/s.email       = [\"info.djsai\@gmail.com\"]/g" "${ROOT_DIR}/sdks/ruby/keynetra-client.gemspec"
   fi
 }
 

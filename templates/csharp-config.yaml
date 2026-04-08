@@ -1,7 +1,7 @@
 packageName: KeyNetra.Client
-packageVersion: 0.1.0
+packageVersion: 0.1.1
 packageCompany: KeyNetra
-packageAuthors: KeyNetra Engineering
+packageAuthors: KeyNetra
 targetFramework: net8.0
 nullableReferenceTypes: true
 optionalProjectFile: false

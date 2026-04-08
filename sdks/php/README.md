@@ -4,7 +4,7 @@
 [![Version](https://img.shields.io/badge/version-0.1.0-green.svg)]()
 [![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://docs.keynetra.com/sdks/php)
 
-Official PHP SDK for the [KeyNetra](https://keynetra.com) authorization platform. 🛡️
+Official PHP Client SDK for the [KeyNetra](https://keynetra.com) authorization platform. 🛡️
 
 KeyNetra provides high-performance, distributed authorization as a service. This SDK allows your PHP applications to integrate seamlessly with KeyNetra for access control and policy management.
 
