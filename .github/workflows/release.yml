@@ -171,6 +171,7 @@ jobs:
         if: matrix.id == 'go'
         run: |
           cd sdks/go
+          go mod init github.com/keynetra/keynetra-client-go || true
           go mod tidy
           go build ./...
 
@@ -219,7 +220,7 @@ jobs:
         run: |
           cd sdks/kotlin
           chmod +x ./gradlew
-          ./gradlew build
+          ./gradlew build --stacktrace
 
       - name: 🍎 Test Swift (Local)
         if: matrix.id == 'swift'

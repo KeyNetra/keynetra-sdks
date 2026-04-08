@@ -117,12 +117,14 @@ generate_sdk_go() {
 
   # Go-specific mappings and flags to handle anyOf and untyped fields
   # Using interface{} instead of any to avoid composite literal issues
+  # We use disallowAdditionalPropertiesIfNotPresent=false to avoid syntax errors with unexpected fields
   if openapi-generator-cli generate \
     -i "${SPEC_FILE}" \
     -g "${generator}" \
     -o "${output_dir}" \
     -c "${config_file}" \
-    --type-mappings=null=interface{},object=interface{},AnyOf=interface{},OneOf=interface{} \
+    --type-mappings=null=interface{},object=interface{},any=interface{},Any=interface{},AnyOf=interface{},OneOf=interface{} \
+    --additional-properties=disallowAdditionalPropertiesIfNotPresent=false \
     --skip-validate-spec > "${log_file}" 2>&1; then
     log_success "${name} SDK generated successfully."
     rm -f "${log_file}"
@@ -147,13 +149,15 @@ generate_sdk_kotlin() {
 
   # Kotlin-specific mappings to handle serialization of Any types
   # Using kotlinx.serialization.json.JsonElement for better compatibility with KMP
+  # We also add import mappings to ensure the generator knows where JsonElement comes from
   if openapi-generator-cli generate \
     -i "${SPEC_FILE}" \
     -g "${generator}" \
     -o "${output_dir}" \
     -c "${config_file}" \
-    --type-mappings=null=kotlinx.serialization.json.JsonElement,Any=kotlinx.serialization.json.JsonElement,object=kotlinx.serialization.json.JsonElement \
-    --additional-properties=enumPropertyNaming=original,library=multiplatform \
+    --type-mappings=null=kotlinx.serialization.json.JsonElement,Any=kotlinx.serialization.json.JsonElement,object=kotlinx.serialization.json.JsonElement,JsonElement=kotlinx.serialization.json.JsonElement \
+    --import-mappings=JsonElement=kotlinx.serialization.json.JsonElement \
+    --additional-properties=enumPropertyNaming=original,library=multiplatform,serializationLibrary=kotlinx-serialization \
     --skip-validate-spec > "${log_file}" 2>&1; then
     log_success "${name} SDK generated successfully."
     rm -f "${log_file}"

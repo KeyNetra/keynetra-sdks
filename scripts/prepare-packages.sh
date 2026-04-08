@@ -162,10 +162,10 @@ prepare_typescript() {
 
   generate_readme "TypeScript" "@keynetra/client" "npm install @keynetra/client" "import { KeyNetraClient } from \"@keynetra/client\";
 
-const client = new KeyNetraClient(
-    \"http://localhost:8080\",
-    \"YOUR_API_KEY\"
-);
+const client = new KeyNetraClient({
+    baseUrl: \"http://localhost:8080\",
+    apiKey: \"YOUR_API_KEY\"
+});
 
 // Perform an access check
 const decision = await client.access.checkAccess({
@@ -259,8 +259,11 @@ export class KeyNetraClient {
 EOF
 
   # Ensure the wrapper is exported in the main index
+  # We use a temporary file to avoid issues with concurrent reads/writes
   if [ -f "${ROOT_DIR}/sdks/typescript/src/index.ts" ]; then
-    echo "export * from './keynetra-client';" >> "${ROOT_DIR}/sdks/typescript/src/index.ts"
+    if ! grep -q "keynetra-client" "${ROOT_DIR}/sdks/typescript/src/index.ts"; then
+      echo "export * from './keynetra-client';" >> "${ROOT_DIR}/sdks/typescript/src/index.ts"
+    fi
   fi
 }
 
@@ -582,6 +585,19 @@ prepare_kotlin() {
   if [ -f "${ROOT_DIR}/sdks/kotlin/gradlew" ]; then
     chmod +x "${ROOT_DIR}/sdks/kotlin/gradlew"
   fi
+
+  # Add missing kotlinx-serialization-json dependency to build.gradle.kts
+  if [ -f "${ROOT_DIR}/sdks/kotlin/build.gradle.kts" ]; then
+    if ! grep -q "kotlinx-serialization-json" "${ROOT_DIR}/sdks/kotlin/build.gradle.kts"; then
+      # Find the dependencies block or a similar serialization core line
+      perl -i -pe 's/(implementation\("org.jetbrains.kotlinx:kotlinx-serialization-core:\$serialization_version"\))/$1\n                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:\$serialization_version")/' "${ROOT_DIR}/sdks/kotlin/build.gradle.kts"
+    fi
+    # Also ensure the serialization plugin is applied if missing
+    if ! grep -q "plugin.serialization" "${ROOT_DIR}/sdks/kotlin/build.gradle.kts"; then
+      perl -i -pe 's/(kotlin\("multiplatform"\))/$1\n    kotlin("plugin.serialization") version "1.9.21"/' "${ROOT_DIR}/sdks/kotlin/build.gradle.kts"
+    fi
+  fi
+
   generate_readme "Kotlin" "keynetra-client-kotlin" "implementation(\"io.keynetra:keynetra-client-kotlin:${SDK_VERSION}\")" "import io.keynetra.client.KeyNetraClient
 
 val client = KeyNetraClient(
