@@ -116,12 +116,13 @@ generate_sdk_go() {
   mkdir -p "${output_dir}"
 
   # Go-specific mappings and flags to handle anyOf and untyped fields
+  # Using interface{} instead of any to avoid composite literal issues
   if openapi-generator-cli generate \
     -i "${SPEC_FILE}" \
     -g "${generator}" \
     -o "${output_dir}" \
     -c "${config_file}" \
-    --type-mappings=null=interface{},object=interface{} \
+    --type-mappings=null=interface{},object=interface{},AnyOf=interface{},OneOf=interface{} \
     --skip-validate-spec > "${log_file}" 2>&1; then
     log_success "${name} SDK generated successfully."
     rm -f "${log_file}"
@@ -144,13 +145,14 @@ generate_sdk_kotlin() {
   rm -rf "${output_dir}"
   mkdir -p "${output_dir}"
 
-  # Kotlin-specific mappings to handle @Contextual for Any?
+  # Kotlin-specific mappings to handle serialization of Any types
+  # Using kotlinx.serialization.json.JsonElement for better compatibility with KMP
   if openapi-generator-cli generate \
     -i "${SPEC_FILE}" \
     -g "${generator}" \
     -o "${output_dir}" \
     -c "${config_file}" \
-    --type-mappings=null=kotlin.Any,Any=kotlin.Any,object=kotlin.Any \
+    --type-mappings=null=kotlinx.serialization.json.JsonElement,Any=kotlinx.serialization.json.JsonElement,object=kotlinx.serialization.json.JsonElement \
     --additional-properties=enumPropertyNaming=original,library=multiplatform \
     --skip-validate-spec > "${log_file}" 2>&1; then
     log_success "${name} SDK generated successfully."

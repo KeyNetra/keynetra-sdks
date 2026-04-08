@@ -1,100 +1,131 @@
-# KeyNetra SDKs
+<div align="center">
 
-Official client libraries for the [KeyNetra](https://keynetra.com) authorization platform.
+# 🛡️ KeyNetra SDKs
+### High-Performance Distributed Authorization at Your Fingertips
 
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![OpenAPI](https://img.shields.io/badge/OpenAPI-3.1-green.svg)](https://www.openapis.org/)
-[![Status](https://img.shields.io/badge/Status-Production--Ready-brightgreen.svg)]()
 
-KeyNetra is a high-performance, distributed authorization as a service. This repository contains the official SDKs for 10 major programming languages, all generated from the canonical KeyNetra OpenAPI specification.
 
-## 🚀 Supported SDKs & Installation
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge)](https://opensource.org/licenses/Apache-2.0)
+[![OpenAPI](https://img.shields.io/badge/OpenAPI-3.1-green.svg?style=for-the-badge)](https://www.openapis.org/)
+[![Status](https://img.shields.io/badge/Status-Production--Ready-brightgreen.svg?style=for-the-badge)]()
+[![Pipeline](https://github.com/keynetra/keynetra-sdks/actions/workflows/release.yml/badge.svg?style=for-the-badge)](https://github.com/keynetra/keynetra-sdks/actions)
+[![Releases](https://img.shields.io/github/v/tag/keynetra/keynetra-sdks?label=Latest%20SDK&style=for-the-badge&color=orange)](https://github.com/keynetra/keynetra-sdks/releases)
 
-| Language | Package Name | Installation |
-| :--- | :--- | :--- |
-| **Python** | `keynetra-client` | `pip install keynetra-client` |
-| **TypeScript** | `@keynetra/client` | `npm install @keynetra/client` |
-| **Go** | `keynetra-client-go` | `go get github.com/keynetra/keynetra-client-go` |
-| **Rust** | `keynetra-client` | `cargo add keynetra-client` |
-| **Java** | `keynetra-client` | `<dependency>...` |
-| **C#** | `KeyNetra.Client` | `dotnet add package KeyNetra.Client` |
-| **PHP** | `keynetra/client` | `composer require keynetra/client` |
-| **Ruby** | `keynetra-client` | `gem install keynetra-client` |
-| **Kotlin** | `keynetra-client-kotlin` | `implementation("io.keynetra:keynetra-client-kotlin:0.1.1")` |
-| **Swift** | `KeyNetraClient` | `.package(url: "https://github.com/keynetra/keynetra-client-swift.git", from: "0.1.1")` |
+[**KeyNetra Home**](https://keynetra.com) | [**Documentation**](https://docs.keynetra.com) | [**KeyNetra Core**](https://github.com/keynetra/keynetra)
 
-## ✨ Key Features
+</div>
 
-- **Unified Interface**: Normalized `KeyNetraClient` entry point across all languages.
-- **Type-Safe**: Full IDE support with generated models and service interfaces.
-- **Multi-Auth Support**: Support for both API Key and Bearer Token authentication.
-- **Modern Standards**: Built on OpenAPI 3.1 and language-specific best practices.
-- **CI/CD Integrated**: Automatically updated whenever the API specification changes.
+
+<div align="center">
+
+### 🛡️ Why Choose KeyNetra?
+
+*High-performance, distributed authorization made simple.*
+
+</div>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png" width="100%">
+</p>
+
+## 🌐 The SDK Ecosystem
+
+KeyNetra is built for the polyglot developer. This repository is the **source of truth** for all 10 official KeyNetra client libraries. Every SDK is generated from our canonical [OpenAPI Specification](openapi/keynetra.yaml) and automatically hardened through our multi-stage CI/CD pipeline.
+
+### 🚀 Quick Directory & Installation
+
+| Language | Icon | Dedicated Repository | Installation |
+| :--- | :---: | :--- | :--- |
+| **Python** | 🐍 | [keynetra-client-python](https://github.com/keynetra/keynetra-client-python) | `pip install keynetra-client` |
+| **TypeScript** | 📘 | [keynetra-client-typescript](https://github.com/keynetra/keynetra-client-typescript) | `npm install @keynetra/client` |
+| **Go** | 🐹 | [keynetra-client-go](https://github.com/keynetra/keynetra-client-go) | `go get github.com/keynetra/keynetra-client-go` |
+| **Rust** | 🦀 | [keynetra-client-rust](https://github.com/keynetra/keynetra-client-rust) | `cargo add keynetra-client` |
+| **Java** | ☕ | [keynetra-client-java](https://github.com/keynetra/keynetra-client-java) | [Maven Central Link]() |
+| **C#** | 💎 | [keynetra-client-csharp](https://github.com/keynetra/keynetra-client-csharp) | `dotnet add package KeyNetra.Client` |
+| **PHP** | 🐘 | [keynetra-client-php](https://github.com/keynetra/keynetra-client-php) | `composer require keynetra/client` |
+| **Ruby** | 💎 | [keynetra-client-ruby](https://github.com/keynetra/keynetra-client-ruby) | `gem install keynetra-client` |
+| **Kotlin** | 📱 | [keynetra-client-kotlin](https://github.com/keynetra/keynetra-client-kotlin) | `implementation("io.keynetra:keynetra-client-kotlin:0.1.1")` |
+| **Swift** | 🍎 | [keynetra-client-swift](https://github.com/keynetra/keynetra-client-swift) | `Swift Package Manager` |
+
+---
+
+## ✨ Professional Features
+
+<div align="center">
+
+| 🚀 Unified Entry | 🛡️ Type Safety | ⚡ High Performance |
+| :---: | :---: | :---: |
+| Single `KeyNetraClient` wrapper for all 10 languages. | Generated models ensure 100% type-safe integration. | Built-in support for high-concurrency auth checks. |
+
+| 🔑 Multi-Auth | 📦 Auto-Updated | 🧪 Battle Tested |
+| :---: | :---: | :---: |
+| Seamless API Key & JWT/Bearer Token support. | Automatically regenerated on every API change. | Verified against live containers in CI/CD. |
+
+</div>
+
+---
 
 ## 🛠️ Unified Client Usage
 
-Every SDK exposes a unified `KeyNetraClient` with a consistent constructor shape, making it easy to switch between languages or use multiple SDKs in a polyglot environment.
-
-```text
-KeyNetraClient(
-  base_url: string,
-  api_key: string
-)
-```
-
-### Example (TypeScript)
+Switching between languages is effortless. The `KeyNetraClient` maintains a consistent shape across the entire ecosystem.
 
 ```typescript
+// Example: Unified Instantiation (TypeScript)
 import { KeyNetraClient } from "@keynetra/client";
 
-const client = new KeyNetraClient("https://api.keynetra.com", "your-api-key");
+const client = new KeyNetraClient({
+  baseUrl: "https://api.keynetra.com",
+  apiKey: "kn_live_..."
+});
 
-const decision = await client.defaultApi.checkAccess({
+// Perform an Access Check
+const { allowed } = await client.access.checkAccess({
   subject: "user:alice",
   action: "write",
   resource: "doc:123"
 });
 ```
 
-## 🏗️ Repository Structure
+---
+
+## 🏗️ Repository Architecture
 
 ```text
 keynetra-sdks/
-├── openapi/          # Canonical OpenAPI 3.1 Specification
-├── scripts/          # Generation and packaging automation scripts
-├── sdks/             # Generated SDK source code (10 languages)
-├── templates/        # OpenAPI Generator configuration templates
-└── tests/            # Cross-language verification tests
+├── 📄 openapi/          # Canonical OpenAPI 3.1 Specification (Source of Truth)
+├── ⚙️ scripts/          # Parallel generation & package hardening automation
+├── 📦 sdks/             # Generated SDK source code for 10 languages
+├── 🎨 templates/        # Professional language-specific generator templates
+└── 🧪 tests/            # Cross-language functional verification tests
 ```
-
-## 🔄 Development & Release
-
-### Regenerate SDKs
-To regenerate all SDKs from the OpenAPI spec:
-```bash
-./scripts/generate-all.sh
-```
-
-### Release Flow
-1. Update `openapi/keynetra.yaml`.
-2. Push to `main` (triggers automatic SDK regeneration).
-3. Push a tag `sdk-v*` to trigger multi-registry publication (PyPI, npm, Maven, etc.) and Git mirroring.
-
-## 🔐 CI/CD Secrets
-
-To enable the automated release workflow, the following GitHub Secrets must be configured in this repository:
-
-- `SDK_MIRROR_TOKEN`: A GitHub PAT with `repo` scope to push to dedicated SDK repositories.
-- `PYPI_API_TOKEN`: For publishing the Python SDK.
-- `NPM_TOKEN`: For publishing the TypeScript SDK.
-- `MAVEN_USERNAME` / `MAVEN_PASSWORD`: For Java distribution.
-- `CARGO_REGISTRY_TOKEN`: For Rust crates.io distribution.
-- `NUGET_API_KEY`: For C# NuGet distribution.
-- `RUBYGEMS_API_KEY`: For RubyGem distribution.
-
-## 📄 License
-
-This project is licensed under the Apache-2.0 License - see the [LICENSE](LICENSE) file for details.
 
 ---
-© 2024 KeyNetra Engineering. All rights reserved.
+
+## 🏁 Automated Release Pipeline
+
+Our release workflow is a professional-grade distribution system that ensures reliability across all registries.
+
+1.  **🏗️ Build**: 10 SDKs generated in parallel using `swift6`, `go 1.23`, and modern toolchains.
+2.  **🧪 Pre-Publish**: Local artifacts are verified against a live `keynetra` service container.
+3.  **🚀 Publish**: Verified code is pushed to **PyPI, npm, NuGet, crates.io, Maven**, and mirrored to dedicated repos.
+4.  **🏁 Post-Publish**: Public packages are downloaded and re-verified to ensure zero-day installation success.
+
+---
+
+## 🤝 Related Repositories
+
+- [**KeyNetra Core**](https://github.com/keynetra/keynetra): The high-performance authorization engine itself.
+- [**KeyNetra Dashboard**](https://github.com/keynetra/dashboard): Manage policies, keys, and audit logs visually.
+- [**KeyNetra Examples**](https://github.com/keynetra/examples): Sample integrations for various frameworks.
+
+---
+
+<div align="center">
+
+### 📄 License
+This project is licensed under the **Apache-2.0 License**.
+
+**© 2024 KeyNetra Engineering. All rights reserved.**
+*Empowering developers with distributed authorization.*
+
+</div>
