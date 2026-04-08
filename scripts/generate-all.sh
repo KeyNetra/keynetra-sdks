@@ -129,6 +129,62 @@ generate_sdk_go() {
   fi
 }
 
+generate_sdk_kotlin() {
+  local generator="kotlin"
+  local output_dir="${ROOT_DIR}/sdks/kotlin"
+  local config_file="${ROOT_DIR}/templates/kotlin-config.yaml"
+  local name="Kotlin"
+  local log_file="${ROOT_DIR}/sdks/gen-Kotlin.log"
+
+  log_step "Generating ${name} SDK..."
+  rm -rf "${output_dir}"
+  mkdir -p "${output_dir}"
+
+  if openapi-generator-cli generate \
+    -i "${SPEC_FILE}" \
+    -g "${generator}" \
+    -o "${output_dir}" \
+    -c "${config_file}" \
+    --type-mappings=null=Any \
+    --skip-validate-spec > "${log_file}" 2>&1; then
+    log_success "${name} SDK generated successfully."
+    rm -f "${log_file}"
+  else
+    log_error "Failed to generate ${name} SDK. See details below:"
+    cat "${log_file}"
+    rm -f "${log_file}"
+    return 1
+  fi
+}
+
+generate_sdk_ruby() {
+  local generator="ruby"
+  local output_dir="${ROOT_DIR}/sdks/ruby"
+  local config_file="${ROOT_DIR}/templates/ruby-config.yaml"
+  local name="Ruby"
+  local log_file="${ROOT_DIR}/sdks/gen-Ruby.log"
+
+  log_step "Generating ${name} SDK..."
+  rm -rf "${output_dir}"
+  mkdir -p "${output_dir}"
+
+  if openapi-generator-cli generate \
+    -i "${SPEC_FILE}" \
+    -g "${generator}" \
+    -o "${output_dir}" \
+    -c "${config_file}" \
+    --type-mappings=null=Object \
+    --skip-validate-spec > "${log_file}" 2>&1; then
+    log_success "${name} SDK generated successfully."
+    rm -f "${log_file}"
+  else
+    log_error "Failed to generate ${name} SDK. See details below:"
+    cat "${log_file}"
+    rm -f "${log_file}"
+    return 1
+  fi
+}
+
 # --- Execution ---
 echo -e "${YELLOW}${ROCKET}  Starting KeyNetra SDK Generation v${SDK_VERSION}${NC}"
 
@@ -146,8 +202,8 @@ FAIL=0
 (generate_sdk rust "${ROOT_DIR}/sdks/rust" "${ROOT_DIR}/templates/rust-config.yaml" "Rust") || FAIL=1 &
 (generate_sdk csharp "${ROOT_DIR}/sdks/csharp" "${ROOT_DIR}/templates/csharp-config.yaml" "C#") || FAIL=1 &
 (generate_sdk php "${ROOT_DIR}/sdks/php" "${ROOT_DIR}/templates/php-config.yaml" "PHP") || FAIL=1 &
-(generate_sdk ruby "${ROOT_DIR}/sdks/ruby" "${ROOT_DIR}/templates/ruby-config.yaml" "Ruby") || FAIL=1 &
-(generate_sdk kotlin "${ROOT_DIR}/sdks/kotlin" "${ROOT_DIR}/templates/kotlin-config.yaml" "Kotlin") || FAIL=1 &
+(generate_sdk_ruby) || FAIL=1 &
+(generate_sdk_kotlin) || FAIL=1 &
 (generate_sdk swift6 "${ROOT_DIR}/sdks/swift" "${ROOT_DIR}/templates/swift-config.yaml" "Swift") || FAIL=1 &
 
 # Wait for all background jobs to finish
