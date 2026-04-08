@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -28,6 +27,7 @@ type SimulationResponse struct {
 	ExplainTrace []map[string]interface{} `json:"explain_trace,omitempty"`
 	FailedConditions []string `json:"failed_conditions,omitempty"`
 	Revision NullableInt32 `json:"revision,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _SimulationResponse SimulationResponse
@@ -316,6 +316,11 @@ func (o SimulationResponse) ToMap() (map[string]interface{}, error) {
 	if o.Revision.IsSet() {
 		toSerialize["revision"] = o.Revision.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -344,15 +349,26 @@ func (o *SimulationResponse) UnmarshalJSON(data []byte) (err error) {
 
 	varSimulationResponse := _SimulationResponse{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varSimulationResponse)
+	err = json.Unmarshal(data, &varSimulationResponse)
 
 	if err != nil {
 		return err
 	}
 
 	*o = SimulationResponse(varSimulationResponse)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "decision")
+		delete(additionalProperties, "matched_policies")
+		delete(additionalProperties, "reason")
+		delete(additionalProperties, "policy_id")
+		delete(additionalProperties, "explain_trace")
+		delete(additionalProperties, "failed_conditions")
+		delete(additionalProperties, "revision")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -27,6 +26,7 @@ type AccessRequest struct {
 	Context map[string]interface{} `json:"context,omitempty"`
 	Consistency *string `json:"consistency,omitempty"`
 	Revision NullableInt32 `json:"revision,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _AccessRequest AccessRequest
@@ -273,6 +273,11 @@ func (o AccessRequest) ToMap() (map[string]interface{}, error) {
 	if o.Revision.IsSet() {
 		toSerialize["revision"] = o.Revision.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -300,15 +305,25 @@ func (o *AccessRequest) UnmarshalJSON(data []byte) (err error) {
 
 	varAccessRequest := _AccessRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAccessRequest)
+	err = json.Unmarshal(data, &varAccessRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = AccessRequest(varAccessRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "user")
+		delete(additionalProperties, "action")
+		delete(additionalProperties, "resource")
+		delete(additionalProperties, "context")
+		delete(additionalProperties, "consistency")
+		delete(additionalProperties, "revision")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

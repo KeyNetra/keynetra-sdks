@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -23,6 +22,7 @@ var _ MappedNullable = &PolicySimulationResponse{}
 type PolicySimulationResponse struct {
 	DecisionBefore map[string]interface{} `json:"decision_before"`
 	DecisionAfter map[string]interface{} `json:"decision_after"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _PolicySimulationResponse PolicySimulationResponse
@@ -106,6 +106,11 @@ func (o PolicySimulationResponse) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["decision_before"] = o.DecisionBefore
 	toSerialize["decision_after"] = o.DecisionAfter
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -134,15 +139,21 @@ func (o *PolicySimulationResponse) UnmarshalJSON(data []byte) (err error) {
 
 	varPolicySimulationResponse := _PolicySimulationResponse{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varPolicySimulationResponse)
+	err = json.Unmarshal(data, &varPolicySimulationResponse)
 
 	if err != nil {
 		return err
 	}
 
 	*o = PolicySimulationResponse(varPolicySimulationResponse)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "decision_before")
+		delete(additionalProperties, "decision_after")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

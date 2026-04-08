@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -26,6 +25,7 @@ type RelationshipCreate struct {
 	Relation string `json:"relation"`
 	ObjectType string `json:"object_type"`
 	ObjectId string `json:"object_id"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _RelationshipCreate RelationshipCreate
@@ -187,6 +187,11 @@ func (o RelationshipCreate) ToMap() (map[string]interface{}, error) {
 	toSerialize["relation"] = o.Relation
 	toSerialize["object_type"] = o.ObjectType
 	toSerialize["object_id"] = o.ObjectId
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -218,15 +223,24 @@ func (o *RelationshipCreate) UnmarshalJSON(data []byte) (err error) {
 
 	varRelationshipCreate := _RelationshipCreate{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varRelationshipCreate)
+	err = json.Unmarshal(data, &varRelationshipCreate)
 
 	if err != nil {
 		return err
 	}
 
 	*o = RelationshipCreate(varRelationshipCreate)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "subject_type")
+		delete(additionalProperties, "subject_id")
+		delete(additionalProperties, "relation")
+		delete(additionalProperties, "object_type")
+		delete(additionalProperties, "object_id")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -25,6 +24,7 @@ type BatchAccessRequest struct {
 	Items []BatchAccessItem `json:"items"`
 	Consistency *string `json:"consistency,omitempty"`
 	Revision NullableInt32 `json:"revision,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _BatchAccessRequest BatchAccessRequest
@@ -201,6 +201,11 @@ func (o BatchAccessRequest) ToMap() (map[string]interface{}, error) {
 	if o.Revision.IsSet() {
 		toSerialize["revision"] = o.Revision.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -228,15 +233,23 @@ func (o *BatchAccessRequest) UnmarshalJSON(data []byte) (err error) {
 
 	varBatchAccessRequest := _BatchAccessRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varBatchAccessRequest)
+	err = json.Unmarshal(data, &varBatchAccessRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = BatchAccessRequest(varBatchAccessRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "user")
+		delete(additionalProperties, "items")
+		delete(additionalProperties, "consistency")
+		delete(additionalProperties, "revision")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

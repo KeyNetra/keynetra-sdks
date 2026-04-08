@@ -13,7 +13,6 @@ package keynetra
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -35,6 +34,7 @@ type AuditRecordOut struct {
 	EvaluatedRules []interface{} `json:"evaluated_rules"`
 	FailedConditions []interface{} `json:"failed_conditions"`
 	CreatedAt time.Time `json:"created_at"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _AuditRecordOut AuditRecordOut
@@ -442,6 +442,11 @@ func (o AuditRecordOut) ToMap() (map[string]interface{}, error) {
 	toSerialize["evaluated_rules"] = o.EvaluatedRules
 	toSerialize["failed_conditions"] = o.FailedConditions
 	toSerialize["created_at"] = o.CreatedAt
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -479,15 +484,32 @@ func (o *AuditRecordOut) UnmarshalJSON(data []byte) (err error) {
 
 	varAuditRecordOut := _AuditRecordOut{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAuditRecordOut)
+	err = json.Unmarshal(data, &varAuditRecordOut)
 
 	if err != nil {
 		return err
 	}
 
 	*o = AuditRecordOut(varAuditRecordOut)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "principal_type")
+		delete(additionalProperties, "principal_id")
+		delete(additionalProperties, "correlation_id")
+		delete(additionalProperties, "user")
+		delete(additionalProperties, "action")
+		delete(additionalProperties, "resource")
+		delete(additionalProperties, "decision")
+		delete(additionalProperties, "matched_policies")
+		delete(additionalProperties, "reason")
+		delete(additionalProperties, "evaluated_rules")
+		delete(additionalProperties, "failed_conditions")
+		delete(additionalProperties, "created_at")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

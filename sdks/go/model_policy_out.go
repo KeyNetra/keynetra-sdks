@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -27,6 +26,7 @@ type PolicyOut struct {
 	Priority int32 `json:"priority"`
 	State *string `json:"state,omitempty"`
 	Conditions map[string]interface{} `json:"conditions"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _PolicyOut PolicyOut
@@ -227,6 +227,11 @@ func (o PolicyOut) ToMap() (map[string]interface{}, error) {
 		toSerialize["state"] = o.State
 	}
 	toSerialize["conditions"] = o.Conditions
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -258,15 +263,25 @@ func (o *PolicyOut) UnmarshalJSON(data []byte) (err error) {
 
 	varPolicyOut := _PolicyOut{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varPolicyOut)
+	err = json.Unmarshal(data, &varPolicyOut)
 
 	if err != nil {
 		return err
 	}
 
 	*o = PolicyOut(varPolicyOut)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "action")
+		delete(additionalProperties, "effect")
+		delete(additionalProperties, "priority")
+		delete(additionalProperties, "state")
+		delete(additionalProperties, "conditions")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

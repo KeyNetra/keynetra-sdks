@@ -157,7 +157,7 @@ generate_sdk_kotlin() {
     -c "${config_file}" \
     --type-mappings=null=kotlinx.serialization.json.JsonElement,Any=kotlinx.serialization.json.JsonElement,object=kotlinx.serialization.json.JsonElement,JsonElement=kotlinx.serialization.json.JsonElement \
     --import-mappings=JsonElement=kotlinx.serialization.json.JsonElement \
-    --additional-properties=enumPropertyNaming=original,library=multiplatform,serializationLibrary=kotlinx-serialization \
+--additional-properties=enumPropertyNaming=original,library=multiplatform,serializationLibrary=kotlinx_serialization \
     --skip-validate-spec > "${log_file}" 2>&1; then
     log_success "${name} SDK generated successfully."
     rm -f "${log_file}"

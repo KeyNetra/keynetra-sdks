@@ -23,7 +23,10 @@ type MetaBody struct {
 	Limit NullableInt32 `json:"limit,omitempty"`
 	NextCursor NullableString `json:"next_cursor,omitempty"`
 	Extra map[string]interface{} `json:"extra,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
+
+type _MetaBody MetaBody
 
 // NewMetaBody instantiates a new MetaBody object
 // This constructor will assign default values to properties that have it defined,
@@ -222,7 +225,36 @@ func (o MetaBody) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Extra) {
 		toSerialize["extra"] = o.Extra
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *MetaBody) UnmarshalJSON(data []byte) (err error) {
+	varMetaBody := _MetaBody{}
+
+	err = json.Unmarshal(data, &varMetaBody)
+
+	if err != nil {
+		return err
+	}
+
+	*o = MetaBody(varMetaBody)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "request_id")
+		delete(additionalProperties, "limit")
+		delete(additionalProperties, "next_cursor")
+		delete(additionalProperties, "extra")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullableMetaBody struct {

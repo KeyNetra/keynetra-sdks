@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 VisualStudioVersion = 12.0.0.0
 MinimumVisualStudioVersion = 10.0.0.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyNetra.Client", "src\KeyNetra.Client\KeyNetra.Client.csproj", "{269FA50D-79E0-4460-9CA6-4B9EEAB3CE0F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyNetra.Client", "src\KeyNetra.Client\KeyNetra.Client.csproj", "{50DF9BBB-96B8-469C-8C82-45A003981807}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyNetra.Client.Test", "src\KeyNetra.Client.Test\KeyNetra.Client.Test.csproj", "{19F1DEBC-DE5E-4517-8062-F000CD499087}"
 EndProject
@@ -12,10 +12,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{269FA50D-79E0-4460-9CA6-4B9EEAB3CE0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{269FA50D-79E0-4460-9CA6-4B9EEAB3CE0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{269FA50D-79E0-4460-9CA6-4B9EEAB3CE0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{269FA50D-79E0-4460-9CA6-4B9EEAB3CE0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50DF9BBB-96B8-469C-8C82-45A003981807}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50DF9BBB-96B8-469C-8C82-45A003981807}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50DF9BBB-96B8-469C-8C82-45A003981807}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50DF9BBB-96B8-469C-8C82-45A003981807}.Release|Any CPU.Build.0 = Release|Any CPU
 		{19F1DEBC-DE5E-4517-8062-F000CD499087}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{19F1DEBC-DE5E-4517-8062-F000CD499087}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19F1DEBC-DE5E-4517-8062-F000CD499087}.Release|Any CPU.ActiveCfg = Release|Any CPU

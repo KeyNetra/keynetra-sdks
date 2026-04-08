@@ -23,7 +23,10 @@ type PlaygroundInput struct {
 	Resource map[string]interface{} `json:"resource,omitempty"`
 	Action *string `json:"action,omitempty"`
 	Context map[string]interface{} `json:"context,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
+
+type _PlaygroundInput PlaygroundInput
 
 // NewPlaygroundInput instantiates a new PlaygroundInput object
 // This constructor will assign default values to properties that have it defined,
@@ -196,7 +199,36 @@ func (o PlaygroundInput) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Context) {
 		toSerialize["context"] = o.Context
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *PlaygroundInput) UnmarshalJSON(data []byte) (err error) {
+	varPlaygroundInput := _PlaygroundInput{}
+
+	err = json.Unmarshal(data, &varPlaygroundInput)
+
+	if err != nil {
+		return err
+	}
+
+	*o = PlaygroundInput(varPlaygroundInput)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "user")
+		delete(additionalProperties, "resource")
+		delete(additionalProperties, "action")
+		delete(additionalProperties, "context")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullablePlaygroundInput struct {

@@ -32,6 +32,7 @@ kotlin {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version")
 
                 api("io.ktor:ktor-client-core:$ktor_version")
                 api("io.ktor:ktor-client-serialization:$ktor_version")

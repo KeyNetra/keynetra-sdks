@@ -21,7 +21,10 @@ var _ MappedNullable = &ImpactAnalysisResponse{}
 type ImpactAnalysisResponse struct {
 	GainedAccess []int32 `json:"gained_access,omitempty"`
 	LostAccess []int32 `json:"lost_access,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
+
+type _ImpactAnalysisResponse ImpactAnalysisResponse
 
 // NewImpactAnalysisResponse instantiates a new ImpactAnalysisResponse object
 // This constructor will assign default values to properties that have it defined,
@@ -120,7 +123,34 @@ func (o ImpactAnalysisResponse) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.LostAccess) {
 		toSerialize["lost_access"] = o.LostAccess
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *ImpactAnalysisResponse) UnmarshalJSON(data []byte) (err error) {
+	varImpactAnalysisResponse := _ImpactAnalysisResponse{}
+
+	err = json.Unmarshal(data, &varImpactAnalysisResponse)
+
+	if err != nil {
+		return err
+	}
+
+	*o = ImpactAnalysisResponse(varImpactAnalysisResponse)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "gained_access")
+		delete(additionalProperties, "lost_access")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullableImpactAnalysisResponse struct {

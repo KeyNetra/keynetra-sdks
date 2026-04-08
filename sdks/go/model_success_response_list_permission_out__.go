@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -24,6 +23,7 @@ type SuccessResponseListPermissionOut struct {
 	Data []PermissionOut `json:"data"`
 	Meta *MetaBody `json:"meta,omitempty"`
 	Error *interface{} `json:"error,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _SuccessResponseListPermissionOut SuccessResponseListPermissionOut
@@ -151,6 +151,11 @@ func (o SuccessResponseListPermissionOut) ToMap() (map[string]interface{}, error
 	if !IsNil(o.Error) {
 		toSerialize["error"] = o.Error
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -178,15 +183,22 @@ func (o *SuccessResponseListPermissionOut) UnmarshalJSON(data []byte) (err error
 
 	varSuccessResponseListPermissionOut := _SuccessResponseListPermissionOut{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varSuccessResponseListPermissionOut)
+	err = json.Unmarshal(data, &varSuccessResponseListPermissionOut)
 
 	if err != nil {
 		return err
 	}
 
 	*o = SuccessResponseListPermissionOut(varSuccessResponseListPermissionOut)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "data")
+		delete(additionalProperties, "meta")
+		delete(additionalProperties, "error")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -23,6 +22,7 @@ var _ MappedNullable = &AdminLoginRequest{}
 type AdminLoginRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _AdminLoginRequest AdminLoginRequest
@@ -106,6 +106,11 @@ func (o AdminLoginRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["username"] = o.Username
 	toSerialize["password"] = o.Password
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -134,15 +139,21 @@ func (o *AdminLoginRequest) UnmarshalJSON(data []byte) (err error) {
 
 	varAdminLoginRequest := _AdminLoginRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAdminLoginRequest)
+	err = json.Unmarshal(data, &varAdminLoginRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = AdminLoginRequest(varAdminLoginRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "username")
+		delete(additionalProperties, "password")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

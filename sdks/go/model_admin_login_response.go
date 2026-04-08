@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -26,6 +25,7 @@ type AdminLoginResponse struct {
 	ExpiresIn int32 `json:"expires_in"`
 	Role *string `json:"role,omitempty"`
 	TenantKey string `json:"tenant_key"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _AdminLoginResponse AdminLoginResponse
@@ -213,6 +213,11 @@ func (o AdminLoginResponse) ToMap() (map[string]interface{}, error) {
 		toSerialize["role"] = o.Role
 	}
 	toSerialize["tenant_key"] = o.TenantKey
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -242,15 +247,24 @@ func (o *AdminLoginResponse) UnmarshalJSON(data []byte) (err error) {
 
 	varAdminLoginResponse := _AdminLoginResponse{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAdminLoginResponse)
+	err = json.Unmarshal(data, &varAdminLoginResponse)
 
 	if err != nil {
 		return err
 	}
 
 	*o = AdminLoginResponse(varAdminLoginResponse)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "access_token")
+		delete(additionalProperties, "token_type")
+		delete(additionalProperties, "expires_in")
+		delete(additionalProperties, "role")
+		delete(additionalProperties, "tenant_key")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

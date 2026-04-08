@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -22,6 +21,7 @@ var _ MappedNullable = &AuthModelCreate{}
 // AuthModelCreate struct for AuthModelCreate
 type AuthModelCreate struct {
 	Schema string `json:"schema"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _AuthModelCreate AuthModelCreate
@@ -79,6 +79,11 @@ func (o AuthModelCreate) MarshalJSON() ([]byte, error) {
 func (o AuthModelCreate) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["schema"] = o.Schema
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -106,15 +111,20 @@ func (o *AuthModelCreate) UnmarshalJSON(data []byte) (err error) {
 
 	varAuthModelCreate := _AuthModelCreate{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAuthModelCreate)
+	err = json.Unmarshal(data, &varAuthModelCreate)
 
 	if err != nil {
 		return err
 	}
 
 	*o = AuthModelCreate(varAuthModelCreate)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "schema")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

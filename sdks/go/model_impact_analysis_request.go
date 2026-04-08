@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -22,6 +21,7 @@ var _ MappedNullable = &ImpactAnalysisRequest{}
 // ImpactAnalysisRequest struct for ImpactAnalysisRequest
 type ImpactAnalysisRequest struct {
 	PolicyChange string `json:"policy_change"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _ImpactAnalysisRequest ImpactAnalysisRequest
@@ -79,6 +79,11 @@ func (o ImpactAnalysisRequest) MarshalJSON() ([]byte, error) {
 func (o ImpactAnalysisRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["policy_change"] = o.PolicyChange
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -106,15 +111,20 @@ func (o *ImpactAnalysisRequest) UnmarshalJSON(data []byte) (err error) {
 
 	varImpactAnalysisRequest := _ImpactAnalysisRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varImpactAnalysisRequest)
+	err = json.Unmarshal(data, &varImpactAnalysisRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = ImpactAnalysisRequest(varImpactAnalysisRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "policy_change")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

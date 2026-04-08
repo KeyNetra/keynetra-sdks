@@ -22,7 +22,10 @@ type PolicySimulationInput struct {
 	PolicyChange NullableString `json:"policy_change,omitempty"`
 	RelationshipChange map[string]interface{} `json:"relationship_change,omitempty"`
 	RoleChange map[string]interface{} `json:"role_change,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
+
+type _PolicySimulationInput PolicySimulationInput
 
 // NewPolicySimulationInput instantiates a new PolicySimulationInput object
 // This constructor will assign default values to properties that have it defined,
@@ -168,7 +171,35 @@ func (o PolicySimulationInput) ToMap() (map[string]interface{}, error) {
 	if o.RoleChange != nil {
 		toSerialize["role_change"] = o.RoleChange
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *PolicySimulationInput) UnmarshalJSON(data []byte) (err error) {
+	varPolicySimulationInput := _PolicySimulationInput{}
+
+	err = json.Unmarshal(data, &varPolicySimulationInput)
+
+	if err != nil {
+		return err
+	}
+
+	*o = PolicySimulationInput(varPolicySimulationInput)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "policy_change")
+		delete(additionalProperties, "relationship_change")
+		delete(additionalProperties, "role_change")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullablePolicySimulationInput struct {

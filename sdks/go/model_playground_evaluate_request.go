@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -23,6 +22,7 @@ var _ MappedNullable = &PlaygroundEvaluateRequest{}
 type PlaygroundEvaluateRequest struct {
 	Policies []PlaygroundPolicy `json:"policies"`
 	Input PlaygroundInput `json:"input"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _PlaygroundEvaluateRequest PlaygroundEvaluateRequest
@@ -106,6 +106,11 @@ func (o PlaygroundEvaluateRequest) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["policies"] = o.Policies
 	toSerialize["input"] = o.Input
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -134,15 +139,21 @@ func (o *PlaygroundEvaluateRequest) UnmarshalJSON(data []byte) (err error) {
 
 	varPlaygroundEvaluateRequest := _PlaygroundEvaluateRequest{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varPlaygroundEvaluateRequest)
+	err = json.Unmarshal(data, &varPlaygroundEvaluateRequest)
 
 	if err != nil {
 		return err
 	}
 
 	*o = PlaygroundEvaluateRequest(varPlaygroundEvaluateRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "policies")
+		delete(additionalProperties, "input")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

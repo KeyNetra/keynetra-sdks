@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -28,6 +27,7 @@ type AccessDecisionResponse struct {
 	PolicyId NullableString `json:"policy_id,omitempty"`
 	ExplainTrace []map[string]interface{} `json:"explain_trace,omitempty"`
 	Revision NullableInt32 `json:"revision,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _AccessDecisionResponse AccessDecisionResponse
@@ -316,6 +316,11 @@ func (o AccessDecisionResponse) ToMap() (map[string]interface{}, error) {
 	if o.Revision.IsSet() {
 		toSerialize["revision"] = o.Revision.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -344,15 +349,26 @@ func (o *AccessDecisionResponse) UnmarshalJSON(data []byte) (err error) {
 
 	varAccessDecisionResponse := _AccessDecisionResponse{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAccessDecisionResponse)
+	err = json.Unmarshal(data, &varAccessDecisionResponse)
 
 	if err != nil {
 		return err
 	}
 
 	*o = AccessDecisionResponse(varAccessDecisionResponse)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "allowed")
+		delete(additionalProperties, "decision")
+		delete(additionalProperties, "matched_policies")
+		delete(additionalProperties, "reason")
+		delete(additionalProperties, "policy_id")
+		delete(additionalProperties, "explain_trace")
+		delete(additionalProperties, "revision")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

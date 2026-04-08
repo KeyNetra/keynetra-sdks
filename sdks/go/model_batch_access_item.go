@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -23,6 +22,7 @@ var _ MappedNullable = &BatchAccessItem{}
 type BatchAccessItem struct {
 	Action string `json:"action"`
 	Resource map[string]interface{} `json:"resource,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _BatchAccessItem BatchAccessItem
@@ -115,6 +115,11 @@ func (o BatchAccessItem) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Resource) {
 		toSerialize["resource"] = o.Resource
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -142,15 +147,21 @@ func (o *BatchAccessItem) UnmarshalJSON(data []byte) (err error) {
 
 	varBatchAccessItem := _BatchAccessItem{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varBatchAccessItem)
+	err = json.Unmarshal(data, &varBatchAccessItem)
 
 	if err != nil {
 		return err
 	}
 
 	*o = BatchAccessItem(varBatchAccessItem)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "action")
+		delete(additionalProperties, "resource")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

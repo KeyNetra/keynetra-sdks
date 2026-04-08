@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -26,6 +25,7 @@ type AuthModelOut struct {
 	Schema string `json:"schema"`
 	Parsed map[string]interface{} `json:"parsed"`
 	Compiled map[string]interface{} `json:"compiled"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _AuthModelOut AuthModelOut
@@ -187,6 +187,11 @@ func (o AuthModelOut) ToMap() (map[string]interface{}, error) {
 	toSerialize["schema"] = o.Schema
 	toSerialize["parsed"] = o.Parsed
 	toSerialize["compiled"] = o.Compiled
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -218,15 +223,24 @@ func (o *AuthModelOut) UnmarshalJSON(data []byte) (err error) {
 
 	varAuthModelOut := _AuthModelOut{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varAuthModelOut)
+	err = json.Unmarshal(data, &varAuthModelOut)
 
 	if err != nil {
 		return err
 	}
 
 	*o = AuthModelOut(varAuthModelOut)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "tenant_id")
+		delete(additionalProperties, "schema")
+		delete(additionalProperties, "parsed")
+		delete(additionalProperties, "compiled")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

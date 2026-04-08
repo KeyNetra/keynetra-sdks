@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -27,6 +26,7 @@ type RelationshipOut struct {
 	ObjectType string `json:"object_type"`
 	ObjectId string `json:"object_id"`
 	Id int32 `json:"id"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _RelationshipOut RelationshipOut
@@ -214,6 +214,11 @@ func (o RelationshipOut) ToMap() (map[string]interface{}, error) {
 	toSerialize["object_type"] = o.ObjectType
 	toSerialize["object_id"] = o.ObjectId
 	toSerialize["id"] = o.Id
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -246,15 +251,25 @@ func (o *RelationshipOut) UnmarshalJSON(data []byte) (err error) {
 
 	varRelationshipOut := _RelationshipOut{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varRelationshipOut)
+	err = json.Unmarshal(data, &varRelationshipOut)
 
 	if err != nil {
 		return err
 	}
 
 	*o = RelationshipOut(varRelationshipOut)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "subject_type")
+		delete(additionalProperties, "subject_id")
+		delete(additionalProperties, "relation")
+		delete(additionalProperties, "object_type")
+		delete(additionalProperties, "object_id")
+		delete(additionalProperties, "id")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

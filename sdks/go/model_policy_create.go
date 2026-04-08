@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -26,6 +25,7 @@ type PolicyCreate struct {
 	Priority *int32 `json:"priority,omitempty"`
 	State *string `json:"state,omitempty"`
 	Conditions map[string]interface{} `json:"conditions,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _PolicyCreate PolicyCreate
@@ -235,6 +235,11 @@ func (o PolicyCreate) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Conditions) {
 		toSerialize["conditions"] = o.Conditions
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -262,15 +267,24 @@ func (o *PolicyCreate) UnmarshalJSON(data []byte) (err error) {
 
 	varPolicyCreate := _PolicyCreate{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varPolicyCreate)
+	err = json.Unmarshal(data, &varPolicyCreate)
 
 	if err != nil {
 		return err
 	}
 
 	*o = PolicyCreate(varPolicyCreate)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "action")
+		delete(additionalProperties, "effect")
+		delete(additionalProperties, "priority")
+		delete(additionalProperties, "state")
+		delete(additionalProperties, "conditions")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

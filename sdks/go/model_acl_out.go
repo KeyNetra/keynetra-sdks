@@ -13,7 +13,6 @@ package keynetra
 import (
 	"encoding/json"
 	"time"
-	"bytes"
 	"fmt"
 )
 
@@ -31,6 +30,7 @@ type ACLOut struct {
 	Id int32 `json:"id"`
 	TenantId int32 `json:"tenant_id"`
 	CreatedAt NullableTime `json:"created_at,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _ACLOut ACLOut
@@ -315,6 +315,11 @@ func (o ACLOut) ToMap() (map[string]interface{}, error) {
 	if o.CreatedAt.IsSet() {
 		toSerialize["created_at"] = o.CreatedAt.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -349,15 +354,28 @@ func (o *ACLOut) UnmarshalJSON(data []byte) (err error) {
 
 	varACLOut := _ACLOut{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varACLOut)
+	err = json.Unmarshal(data, &varACLOut)
 
 	if err != nil {
 		return err
 	}
 
 	*o = ACLOut(varACLOut)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "subject_type")
+		delete(additionalProperties, "subject_id")
+		delete(additionalProperties, "resource_type")
+		delete(additionalProperties, "resource_id")
+		delete(additionalProperties, "action")
+		delete(additionalProperties, "effect")
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "tenant_id")
+		delete(additionalProperties, "created_at")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

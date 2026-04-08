@@ -26,10 +26,10 @@ npm install @keynetra/client
 ```typescript
 import { KeyNetraClient } from "@keynetra/client";
 
-const client = new KeyNetraClient(
-    "http://localhost:8080",
-    "YOUR_API_KEY"
-);
+const client = new KeyNetraClient({
+    baseUrl: "http://localhost:8080",
+    apiKey: "YOUR_API_KEY"
+});
 
 // Perform an access check
 const decision = await client.access.checkAccess({

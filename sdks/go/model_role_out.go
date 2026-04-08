@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -23,6 +22,7 @@ var _ MappedNullable = &RoleOut{}
 type RoleOut struct {
 	Id int32 `json:"id"`
 	Name string `json:"name"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _RoleOut RoleOut
@@ -106,6 +106,11 @@ func (o RoleOut) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["id"] = o.Id
 	toSerialize["name"] = o.Name
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -134,15 +139,21 @@ func (o *RoleOut) UnmarshalJSON(data []byte) (err error) {
 
 	varRoleOut := _RoleOut{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varRoleOut)
+	err = json.Unmarshal(data, &varRoleOut)
 
 	if err != nil {
 		return err
 	}
 
 	*o = RoleOut(varRoleOut)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "id")
+		delete(additionalProperties, "name")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

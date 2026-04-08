@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -22,6 +21,7 @@ var _ MappedNullable = &PermissionUpdate{}
 // PermissionUpdate struct for PermissionUpdate
 type PermissionUpdate struct {
 	Action string `json:"action"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _PermissionUpdate PermissionUpdate
@@ -79,6 +79,11 @@ func (o PermissionUpdate) MarshalJSON() ([]byte, error) {
 func (o PermissionUpdate) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["action"] = o.Action
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -106,15 +111,20 @@ func (o *PermissionUpdate) UnmarshalJSON(data []byte) (err error) {
 
 	varPermissionUpdate := _PermissionUpdate{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varPermissionUpdate)
+	err = json.Unmarshal(data, &varPermissionUpdate)
 
 	if err != nil {
 		return err
 	}
 
 	*o = PermissionUpdate(varPermissionUpdate)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "action")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

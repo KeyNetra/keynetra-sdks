@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -24,6 +23,7 @@ type BatchAccessResult struct {
 	Action string `json:"action"`
 	Allowed bool `json:"allowed"`
 	Revision NullableInt32 `json:"revision,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _BatchAccessResult BatchAccessResult
@@ -152,6 +152,11 @@ func (o BatchAccessResult) ToMap() (map[string]interface{}, error) {
 	if o.Revision.IsSet() {
 		toSerialize["revision"] = o.Revision.Get()
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -180,15 +185,22 @@ func (o *BatchAccessResult) UnmarshalJSON(data []byte) (err error) {
 
 	varBatchAccessResult := _BatchAccessResult{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varBatchAccessResult)
+	err = json.Unmarshal(data, &varBatchAccessResult)
 
 	if err != nil {
 		return err
 	}
 
 	*o = BatchAccessResult(varBatchAccessResult)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "action")
+		delete(additionalProperties, "allowed")
+		delete(additionalProperties, "revision")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

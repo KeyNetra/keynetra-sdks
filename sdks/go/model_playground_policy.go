@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -26,6 +25,7 @@ type PlaygroundPolicy struct {
 	Priority *int32 `json:"priority,omitempty"`
 	PolicyId NullableString `json:"policy_id,omitempty"`
 	Conditions map[string]interface{} `json:"conditions,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _PlaygroundPolicy PlaygroundPolicy
@@ -241,6 +241,11 @@ func (o PlaygroundPolicy) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Conditions) {
 		toSerialize["conditions"] = o.Conditions
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -268,15 +273,24 @@ func (o *PlaygroundPolicy) UnmarshalJSON(data []byte) (err error) {
 
 	varPlaygroundPolicy := _PlaygroundPolicy{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varPlaygroundPolicy)
+	err = json.Unmarshal(data, &varPlaygroundPolicy)
 
 	if err != nil {
 		return err
 	}
 
 	*o = PlaygroundPolicy(varPlaygroundPolicy)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "action")
+		delete(additionalProperties, "effect")
+		delete(additionalProperties, "priority")
+		delete(additionalProperties, "policy_id")
+		delete(additionalProperties, "conditions")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

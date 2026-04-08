@@ -6,7 +6,7 @@
 | ------------ | ------------- | ------------- | ------------- |
 | **&#x60;data&#x60;** | **kotlin.collections.Map&lt;kotlin.String, kotlin.Int&gt;** |  |  |
 | **meta** | [**MetaBody**](MetaBody.md) |  |  [optional] |
-| **error** | [**kotlin.Any**](kotlin.Any.md) |  |  [optional] |
+| **error** | [**KotlinxserializationjsonJsonElement**](KotlinxserializationjsonJsonElement.md) |  |  [optional] |
 
 
 

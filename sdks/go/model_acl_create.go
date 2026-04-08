@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -27,6 +26,7 @@ type ACLCreate struct {
 	ResourceId string `json:"resource_id"`
 	Action string `json:"action"`
 	Effect string `json:"effect"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _ACLCreate ACLCreate
@@ -214,6 +214,11 @@ func (o ACLCreate) ToMap() (map[string]interface{}, error) {
 	toSerialize["resource_id"] = o.ResourceId
 	toSerialize["action"] = o.Action
 	toSerialize["effect"] = o.Effect
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -246,15 +251,25 @@ func (o *ACLCreate) UnmarshalJSON(data []byte) (err error) {
 
 	varACLCreate := _ACLCreate{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varACLCreate)
+	err = json.Unmarshal(data, &varACLCreate)
 
 	if err != nil {
 		return err
 	}
 
 	*o = ACLCreate(varACLCreate)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "subject_type")
+		delete(additionalProperties, "subject_id")
+		delete(additionalProperties, "resource_type")
+		delete(additionalProperties, "resource_id")
+		delete(additionalProperties, "action")
+		delete(additionalProperties, "effect")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

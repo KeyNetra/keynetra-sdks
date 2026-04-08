@@ -12,7 +12,6 @@ package keynetra
 
 import (
 	"encoding/json"
-	"bytes"
 	"fmt"
 )
 
@@ -22,6 +21,7 @@ var _ MappedNullable = &RoleCreate{}
 // RoleCreate struct for RoleCreate
 type RoleCreate struct {
 	Name string `json:"name"`
+	AdditionalProperties map[string]interface{}
 }
 
 type _RoleCreate RoleCreate
@@ -79,6 +79,11 @@ func (o RoleCreate) MarshalJSON() ([]byte, error) {
 func (o RoleCreate) ToMap() (map[string]interface{}, error) {
 	toSerialize := map[string]interface{}{}
 	toSerialize["name"] = o.Name
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
 }
 
@@ -106,15 +111,20 @@ func (o *RoleCreate) UnmarshalJSON(data []byte) (err error) {
 
 	varRoleCreate := _RoleCreate{}
 
-	decoder := json.NewDecoder(bytes.NewReader(data))
-	decoder.DisallowUnknownFields()
-	err = decoder.Decode(&varRoleCreate)
+	err = json.Unmarshal(data, &varRoleCreate)
 
 	if err != nil {
 		return err
 	}
 
 	*o = RoleCreate(varRoleCreate)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "name")
+		o.AdditionalProperties = additionalProperties
+	}
 
 	return err
 }

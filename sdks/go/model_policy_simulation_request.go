@@ -21,7 +21,10 @@ var _ MappedNullable = &PolicySimulationRequest{}
 type PolicySimulationRequest struct {
 	Simulate *PolicySimulationInput `json:"simulate,omitempty"`
 	Request map[string]interface{} `json:"request,omitempty"`
+	AdditionalProperties map[string]interface{}
 }
+
+type _PolicySimulationRequest PolicySimulationRequest
 
 // NewPolicySimulationRequest instantiates a new PolicySimulationRequest object
 // This constructor will assign default values to properties that have it defined,
@@ -120,7 +123,34 @@ func (o PolicySimulationRequest) ToMap() (map[string]interface{}, error) {
 	if !IsNil(o.Request) {
 		toSerialize["request"] = o.Request
 	}
+
+	for key, value := range o.AdditionalProperties {
+		toSerialize[key] = value
+	}
+
 	return toSerialize, nil
+}
+
+func (o *PolicySimulationRequest) UnmarshalJSON(data []byte) (err error) {
+	varPolicySimulationRequest := _PolicySimulationRequest{}
+
+	err = json.Unmarshal(data, &varPolicySimulationRequest)
+
+	if err != nil {
+		return err
+	}
+
+	*o = PolicySimulationRequest(varPolicySimulationRequest)
+
+	additionalProperties := make(map[string]interface{})
+
+	if err = json.Unmarshal(data, &additionalProperties); err == nil {
+		delete(additionalProperties, "simulate")
+		delete(additionalProperties, "request")
+		o.AdditionalProperties = additionalProperties
+	}
+
+	return err
 }
 
 type NullablePolicySimulationRequest struct {
