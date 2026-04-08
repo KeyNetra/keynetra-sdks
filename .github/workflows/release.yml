@@ -641,7 +641,8 @@ jobs:
   # --- STAGE 4: 🏁 Post-Publish Verification (Registry Libraries) ---
   verify-publish:
     name: "🏁 Registry: ${{ matrix.language }}"
-    needs: [prepare, python, typescript, go, rust, java, csharp, php, ruby, kotlin, swift]
+    needs: [prepare, python, typescript, go, rust, java, csharp, php, ruby, swift]
+    # needs: [prepare, python, typescript, go, rust, java, csharp, php, ruby, kotlin, swift]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
