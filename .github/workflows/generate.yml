@@ -29,11 +29,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
 
       - name: 📦 Install OpenAPI Generator
         run: |
           echo "Installing openapi-generator-cli..."
-          npm install -g @openapitools/openapi-generator-cli
+          if [ ! -d "node_modules" ]; then
+            npm install @openapitools/openapi-generator-cli
+          fi
+          echo "$(pwd)/node_modules/.bin" >> $GITHUB_PATH
 
       - name: 🚀 Run SDK Generation
         run: |
@@ -69,10 +73,10 @@ jobs:
         ports:
           - 8080:8080
         options: >-
-          --health-cmd "curl -f http://localhost:8080/health || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd "(python3 -c 'import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.connect((\"localhost\", 8080))' || python -c 'import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.connect((\"localhost\", 8080))') || exit 1"
+          --health-interval 15s
+          --health-timeout 10s
+          --health-retries 10
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
@@ -83,11 +87,23 @@ jobs:
           name: generated-sdks
           path: sdks
 
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
       - name: 🐍 Test Python Instantiation
         run: |
           cd tests/python
           pip install pydantic urllib3 python-dateutil typing-extensions
           python3 test_instantiation.py
+
+      - name: 🐹 Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+          cache: true
 
       - name: 🐹 Test Go Instantiation
         run: |

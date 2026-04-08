@@ -3,10 +3,10 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**user** | **[String: AnyCodable]** |  | [optional] 
+**user** | **[String: JSONValue]** |  | [optional] 
 **action** | **String** |  | 
-**resource** | **[String: AnyCodable]** |  | [optional] 
-**context** | **[String: AnyCodable]** |  | [optional] 
+**resource** | **[String: JSONValue]** |  | [optional] 
+**context** | **[String: JSONValue]** |  | [optional] 
 **consistency** | **String** |  | [optional] [default to "eventual"]
 **revision** | **Int** |  | [optional] 
 

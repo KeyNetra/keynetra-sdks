@@ -7,14 +7,14 @@ Name | Type | Description | Notes
 **principalType** | **String** |  | 
 **principalId** | **String** |  | 
 **correlationId** | **String** |  | [optional] 
-**user** | **[String: AnyCodable]** |  | 
+**user** | **[String: JSONValue]** |  | 
 **action** | **String** |  | 
-**resource** | **[String: AnyCodable]** |  | 
+**resource** | **[String: JSONValue]** |  | 
 **decision** | **String** |  | 
-**matchedPolicies** | **[AnyCodable]** |  | 
+**matchedPolicies** | **[JSONValue]** |  | 
 **reason** | **String** |  | [optional] 
-**evaluatedRules** | **[AnyCodable]** |  | 
-**failedConditions** | **[AnyCodable]** |  | 
+**evaluatedRules** | **[JSONValue]** |  | 
+**failedConditions** | **[JSONValue]** |  | 
 **createdAt** | **Date** |  | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

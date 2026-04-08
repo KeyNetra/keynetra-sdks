@@ -3,7 +3,7 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**user** | **[String: AnyCodable]** |  | [optional] 
+**user** | **[String: JSONValue]** |  | [optional] 
 **items** | [BatchAccessItem] |  | 
 **consistency** | **String** |  | [optional] [default to "eventual"]
 **revision** | **Int** |  | [optional] 

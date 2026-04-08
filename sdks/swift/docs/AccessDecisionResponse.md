@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **matchedPolicies** | **[String]** |  | [optional] 
 **reason** | **String** |  | [optional] 
 **policyId** | **String** |  | [optional] 
-**explainTrace** | [[String: AnyCodable]] |  | [optional] 
+**explainTrace** | [[String: JSONValue]] |  | [optional] 
 **revision** | **Int** |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

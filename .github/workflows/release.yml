@@ -79,10 +79,10 @@ jobs:
         ports:
           - 8080:8080
         options: >-
-          --health-cmd "curl -f http://localhost:8080/health || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd "(python3 -c 'import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.connect((\"localhost\", 8080))' || python -c 'import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.connect((\"localhost\", 8080))') || exit 1"
+          --health-interval 15s
+          --health-timeout 10s
+          --health-retries 10
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
@@ -677,10 +677,10 @@ jobs:
         ports:
           - 8080:8080
         options: >-
-          --health-cmd "curl -f http://localhost:8080/health || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd "(python3 -c 'import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.connect((\"localhost\", 8080))' || python -c 'import socket; s = socket.socket(socket.AF_INET, socket.SOCK_STREAM); s.connect((\"localhost\", 8080))') || exit 1"
+          --health-interval 15s
+          --health-timeout 10s
+          --health-retries 10
     steps:
       - name: ⏳ Wait for indexing
         run: sleep ${{ matrix.wait }}

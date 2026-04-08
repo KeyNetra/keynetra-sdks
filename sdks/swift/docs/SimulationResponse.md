@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **matchedPolicies** | **[String]** |  | 
 **reason** | **String** |  | [optional] 
 **policyId** | **String** |  | [optional] 
-**explainTrace** | [[String: AnyCodable]] |  | [optional] 
+**explainTrace** | [[String: JSONValue]] |  | [optional] 
 **failedConditions** | **[String]** |  | [optional] 
 **revision** | **Int** |  | [optional] 
 

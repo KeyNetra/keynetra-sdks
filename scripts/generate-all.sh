@@ -50,6 +50,7 @@ generate_sdk() {
   local output_dir="$2"
   local config_file="$3"
   local name="${4:-$generator}"
+  local log_file="${ROOT_DIR}/sdks/gen-${name}.log"
 
   log_step "Generating ${name} SDK..."
   rm -rf "${output_dir}"
@@ -60,10 +61,13 @@ generate_sdk() {
     -g "${generator}" \
     -o "${output_dir}" \
     -c "${config_file}" \
-    --skip-validate-spec > /dev/null 2>&1; then
+    --skip-validate-spec > "${log_file}" 2>&1; then
     log_success "${name} SDK generated successfully."
+    rm -f "${log_file}"
   else
-    log_error "Failed to generate ${name} SDK."
+    log_error "Failed to generate ${name} SDK. See details below:"
+    cat "${log_file}"
+    rm -f "${log_file}"
     return 1
   fi
 }
@@ -73,6 +77,7 @@ generate_sdk_python() {
   local output_dir="${ROOT_DIR}/sdks/python"
   local config_file="${ROOT_DIR}/templates/python-config.yaml"
   local name="Python"
+  local log_file="${ROOT_DIR}/sdks/gen-Python.log"
 
   log_step "Generating ${name} SDK..."
   rm -rf "${output_dir}"
@@ -84,10 +89,13 @@ generate_sdk_python() {
     -o "${output_dir}" \
     -c "${config_file}" \
     --type-mappings=null=Any \
-    --skip-validate-spec > /dev/null 2>&1; then
+    --skip-validate-spec > "${log_file}" 2>&1; then
     log_success "${name} SDK generated successfully."
+    rm -f "${log_file}"
   else
-    log_error "Failed to generate ${name} SDK."
+    log_error "Failed to generate ${name} SDK. See details below:"
+    cat "${log_file}"
+    rm -f "${log_file}"
     return 1
   fi
 }
@@ -111,7 +119,7 @@ FAIL=0
 (generate_sdk php "${ROOT_DIR}/sdks/php" "${ROOT_DIR}/templates/php-config.yaml" "PHP") || FAIL=1 &
 (generate_sdk ruby "${ROOT_DIR}/sdks/ruby" "${ROOT_DIR}/templates/ruby-config.yaml" "Ruby") || FAIL=1 &
 (generate_sdk kotlin "${ROOT_DIR}/sdks/kotlin" "${ROOT_DIR}/templates/kotlin-config.yaml" "Kotlin") || FAIL=1 &
-(generate_sdk swift5 "${ROOT_DIR}/sdks/swift" "${ROOT_DIR}/templates/swift-config.yaml" "Swift") || FAIL=1 &
+(generate_sdk swift6 "${ROOT_DIR}/sdks/swift" "${ROOT_DIR}/templates/swift-config.yaml" "Swift") || FAIL=1 &
 
 # Wait for all background jobs to finish
 for job in $(jobs -p); do

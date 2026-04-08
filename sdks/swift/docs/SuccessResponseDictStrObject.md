@@ -3,7 +3,7 @@
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**data** | **[String: AnyCodable]** |  | 
+**data** | **[String: JSONValue]** |  | 
 **meta** | [**MetaBody**](MetaBody.md) |  | [optional] 
 **error** | [**Null**](Null.md) |  | [optional] 
 
