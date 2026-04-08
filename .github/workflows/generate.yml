@@ -1,0 +1,85 @@
+name: ⚙️ Generate SDKs
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - openapi/keynetra.yaml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - openapi/keynetra.yaml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    name: 🛠️ Generate & Prepare SDKs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: 📦 Install OpenAPI Generator
+        run: |
+          echo "Installing openapi-generator-cli..."
+          npm install -g @openapitools/openapi-generator-cli
+
+      - name: 🚀 Run SDK Generation
+        run: |
+          chmod +x scripts/generate-all.sh scripts/prepare-packages.sh
+          ./scripts/generate-all.sh
+
+      - name: 💾 Commit & Push Changes
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config user.name "KeyNetra Engineering"
+          git config user.email "business.keynetra@gmail.com"
+          git add sdks scripts templates openapi
+          if git diff --cached --quiet; then
+            echo "✨ No SDK changes detected."
+            exit 0
+          fi
+          git commit -m "chore(sdk): regenerate SDKs 🤖"
+          git push
+
+      - name: 💾 Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-sdks
+          path: sdks
+
+  test:
+    name: 🧪 Smoke Test SDKs
+    needs: generate
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 📂 Download SDKs
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-sdks
+          path: sdks
+
+      - name: 🐍 Test Python Instantiation
+        run: |
+          cd tests/python
+          python3 test_instantiation.py
+
+      - name: 🐹 Test Go Instantiation
+        run: |
+          cd sdks/go
+          go mod tidy
+          go build ./...

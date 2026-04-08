@@ -1,0 +1,27 @@
+{
+  "name": "@keynetra/client",
+  "version": "0.1.0",
+  "description": "Official TypeScript SDK for the KeyNetra authorization platform.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "author": "KeyNetra Engineering <business.keynetra@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keynetra/keynetra-sdks.git"
+  },
+  "homepage": "https://github.com/keynetra/keynetra-sdks",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

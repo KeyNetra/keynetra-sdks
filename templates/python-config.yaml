@@ -1,0 +1,11 @@
+packageName: keynetra_client
+projectName: keynetra-client
+packageVersion: 0.1.0
+packageUrl: https://github.com/keynetra/keynetra-sdks
+library: urllib3
+hideGenerationTimestamp: true
+authorName: KeyNetra Engineering
+authorEmail: business.keynetra@gmail.com
+packageDescription: Official Python SDK for the KeyNetra authorization platform.
+licenseName: Apache-2.0
+usePydantic: false

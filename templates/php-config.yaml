@@ -1,0 +1,12 @@
+invokerPackage: KeyNetra\Client
+packageName: keynetra-client
+packageVersion: 0.1.0
+variableNamingConvention: camelCase
+hideGenerationTimestamp: true
+composerPackageName: keynetra/client
+developerName: KeyNetra Engineering
+developerEmail: business.keynetra@gmail.com
+developerOrganization: KeyNetra
+developerOrganizationUrl: https://keynetra.com
+artifactDescription: Official PHP SDK for the KeyNetra authorization platform.
+licenseName: Apache-2.0

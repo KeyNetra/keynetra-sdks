@@ -1,0 +1,121 @@
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# OpenAPI Generator
+.openapi-generator/
+sdks/**/.openapi-generator/
+sdks/**/.openapi-generator-ignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+env/
+venv/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+dist/
+lib-cov
+coverage
+*.lcov
+.nyc_output
+.grunt
+bower_components
+.lock-wscript
+build/Release
+
+# Java
+*.class
+*.log
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+target/
+.gradle/
+build/
+!gradle-wrapper.jar
+
+# Go
+bin/
+pkg/
+src/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+
+# Rust
+target/
+**/*.rs.bk
+Cargo.lock
+
+# C#
+bin/
+obj/
+*.user
+*.userosscache
+*.sln.doccache
+*.suo
+
+# PHP
+vendor/
+.phpunit.result.cache
+composer.lock
+
+# Ruby
+.bundle/
+vendor/bundle
+*.gem
+.yardoc
+/_yardoc
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+
+# Swift
+.build/
+Packages/
+Package.pins
+Package.resolved
+*.xcodeproj
+*.xcworkspace
+
+# General
+tmp/
+logs/
+*.bak
+*.tmp

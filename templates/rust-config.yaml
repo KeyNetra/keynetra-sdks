@@ -1,0 +1,10 @@
+packageName: keynetra-client
+packageVersion: 0.1.0
+library: reqwest
+supportAsync: true
+hideGenerationTimestamp: true
+packageAuthors: "KeyNetra Engineering <business.keynetra@gmail.com>"
+packageDescription: "Official Rust SDK for the KeyNetra authorization platform."
+packageHomepage: "https://keynetra.com"
+packageRepository: "https://github.com/keynetra/keynetra-sdks"
+packageLicense: "Apache-2.0"

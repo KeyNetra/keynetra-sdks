@@ -1,0 +1,12 @@
+groupId: io.keynetra
+artifactId: keynetra-client-kotlin
+artifactVersion: 0.1.0
+packageName: io.keynetra.client
+library: multiplatform
+dateLibrary: kotlinx-datetime
+hideGenerationTimestamp: true
+developerName: KeyNetra Engineering
+developerEmail: business.keynetra@gmail.com
+developerOrganization: KeyNetra
+developerOrganizationUrl: https://keynetra.com
+artifactDescription: Official Kotlin Multiplatform SDK for the KeyNetra authorization platform.

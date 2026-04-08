@@ -1,0 +1,15 @@
+name: KeyNetraClient
+targets:
+  KeyNetraClient:
+    type: framework
+    platform: iOS
+    deploymentTarget: "11.0"
+    sources: [KeyNetraClient]
+    info:
+      path: ./Info.plist
+      version: 0.1.1
+    settings:
+      APPLICATION_EXTENSION_API_ONLY: true
+    scheme: {}
+    dependencies:
+    - carthage: AnyCodable

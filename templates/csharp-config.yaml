@@ -1,0 +1,11 @@
+packageName: KeyNetra.Client
+packageVersion: 0.1.0
+packageCompany: KeyNetra
+packageAuthors: KeyNetra Engineering
+targetFramework: net8.0
+nullableReferenceTypes: true
+optionalProjectFile: false
+packageTags: "keynetra;authorization;authz;permissions;sdk"
+packageDescription: "Official C# SDK for the KeyNetra authorization platform. KeyNetra provides high-performance, distributed authorization as a service."
+packageProjectUrl: "https://github.com/keynetra/keynetra-sdks"
+packageLicenseExpression: "Apache-2.0"
