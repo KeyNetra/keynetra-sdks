@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "io.keynetra"
-version = "0.1.0"
+version = "0.1.1"
 
 val kotlin_version = "2.2.20"
 val coroutines_version = "1.10.2"

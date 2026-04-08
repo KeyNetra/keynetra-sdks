@@ -1,7 +1,7 @@
 # keynetra-client
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Version](https://img.shields.io/badge/version-0.1.0-green.svg)]()
+[![Version](https://img.shields.io/badge/version-0.1.1-green.svg)]()
 [![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://docs.keynetra.com/sdks/ruby)
 
 Official Ruby Client SDK for the [KeyNetra](https://keynetra.com) authorization platform. 🛡️

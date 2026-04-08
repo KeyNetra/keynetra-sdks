@@ -8,4 +8,4 @@ script:
   - bundle install --path vendor/bundle
   - bundle exec rspec
   - gem build keynetra-client.gemspec
-  - gem install ./keynetra-client-0.1.0.gem
+  - gem install ./keynetra-client-0.1.1.gem

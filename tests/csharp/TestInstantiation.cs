@@ -8,7 +8,7 @@ namespace KeyNetra.Tests
         static void Main(string[] args)
         {
             try {
-                var client = new KeyNetraClient("https://api.keynetra.com", "test-key");
+                var client = new KeyNetraClient("http://localhost:8080", "test-key");
                 if (client != null) {
                     Console.WriteLine("C# SDK: Client instantiated successfully.");
                 }

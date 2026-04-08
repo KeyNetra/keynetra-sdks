@@ -63,6 +63,16 @@ jobs:
     name: 🧪 Smoke Test SDKs
     needs: generate
     runs-on: ubuntu-latest
+    services:
+      keynetra:
+        image: docker.io/keynetra/keynetra:latest
+        ports:
+          - 8080:8080
+        options: >-
+          --health-cmd "curl -f http://localhost:8080/health || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
@@ -76,6 +86,7 @@ jobs:
       - name: 🐍 Test Python Instantiation
         run: |
           cd tests/python
+          pip install pydantic urllib3 python-dateutil typing-extensions
           python3 test_instantiation.py
 
       - name: 🐹 Test Go Instantiation

@@ -5,7 +5,7 @@
     <artifactId>keynetra-client</artifactId>
     <packaging>jar</packaging>
     <name>keynetra-client</name>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <url>https://github.com/openapitools/openapi-generator</url>
     <description>Official Java Client SDK for the KeyNetra authorization platform.</description>
     <scm>

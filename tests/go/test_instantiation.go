@@ -14,7 +14,7 @@ func testClientInstantiation() bool {
 		}
 	}()
 
-	client := keynetra.NewKeyNetraClient("https://api.keynetra.com", "test-key")
+	client := keynetra.NewKeyNetraClient("http://localhost:8080", "test-key")
 	if client != nil {
 		fmt.Println("Go SDK: Client instantiated successfully.")
 		return true

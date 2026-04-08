@@ -97,16 +97,31 @@ echo -e "${YELLOW}${ROCKET}  Starting KeyNetra SDK Generation v${SDK_VERSION}${N
 
 install_generator
 
-generate_sdk_python
-generate_sdk typescript-fetch "${ROOT_DIR}/sdks/typescript" "${ROOT_DIR}/templates/typescript-config.yaml" "TypeScript"
-generate_sdk go "${ROOT_DIR}/sdks/go" "${ROOT_DIR}/templates/go-config.yaml" "Go"
-generate_sdk java "${ROOT_DIR}/sdks/java" "${ROOT_DIR}/templates/java-config.yaml" "Java"
-generate_sdk rust "${ROOT_DIR}/sdks/rust" "${ROOT_DIR}/templates/rust-config.yaml" "Rust"
-generate_sdk csharp "${ROOT_DIR}/sdks/csharp" "${ROOT_DIR}/templates/csharp-config.yaml" "C#"
-generate_sdk php "${ROOT_DIR}/sdks/php" "${ROOT_DIR}/templates/php-config.yaml" "PHP"
-generate_sdk ruby "${ROOT_DIR}/sdks/ruby" "${ROOT_DIR}/templates/ruby-config.yaml" "Ruby"
-generate_sdk kotlin "${ROOT_DIR}/sdks/kotlin" "${ROOT_DIR}/templates/kotlin-config.yaml" "Kotlin"
-generate_sdk swift5 "${ROOT_DIR}/sdks/swift" "${ROOT_DIR}/templates/swift-config.yaml" "Swift"
+# Generate in parallel
+log_info "Generating SDKs in parallel..."
+
+FAIL=0
+
+(generate_sdk_python) || FAIL=1 &
+(generate_sdk typescript-fetch "${ROOT_DIR}/sdks/typescript" "${ROOT_DIR}/templates/typescript-config.yaml" "TypeScript") || FAIL=1 &
+(generate_sdk go "${ROOT_DIR}/sdks/go" "${ROOT_DIR}/templates/go-config.yaml" "Go") || FAIL=1 &
+(generate_sdk java "${ROOT_DIR}/sdks/java" "${ROOT_DIR}/templates/java-config.yaml" "Java") || FAIL=1 &
+(generate_sdk rust "${ROOT_DIR}/sdks/rust" "${ROOT_DIR}/templates/rust-config.yaml" "Rust") || FAIL=1 &
+(generate_sdk csharp "${ROOT_DIR}/sdks/csharp" "${ROOT_DIR}/templates/csharp-config.yaml" "C#") || FAIL=1 &
+(generate_sdk php "${ROOT_DIR}/sdks/php" "${ROOT_DIR}/templates/php-config.yaml" "PHP") || FAIL=1 &
+(generate_sdk ruby "${ROOT_DIR}/sdks/ruby" "${ROOT_DIR}/templates/ruby-config.yaml" "Ruby") || FAIL=1 &
+(generate_sdk kotlin "${ROOT_DIR}/sdks/kotlin" "${ROOT_DIR}/templates/kotlin-config.yaml" "Kotlin") || FAIL=1 &
+(generate_sdk swift5 "${ROOT_DIR}/sdks/swift" "${ROOT_DIR}/templates/swift-config.yaml" "Swift") || FAIL=1 &
+
+# Wait for all background jobs to finish
+for job in $(jobs -p); do
+    wait "$job" || FAIL=1
+done
+
+if [ "$FAIL" -ne 0 ]; then
+  log_error "One or more SDK generation tasks failed."
+  exit 1
+fi
 
 log_step "Preparing packages..."
 SDK_VERSION="${SDK_VERSION}" "${ROOT_DIR}/scripts/prepare-packages.sh"

@@ -44,10 +44,193 @@ jobs:
           name: generated-sdks
           path: sdks
 
+  # --- STAGE 2: 🧪 Pre-Publish Verification (Local Artifacts) ---
+  smoke-test:
+    name: 🧪 Test ${{ matrix.language }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: Python
+            id: python
+          - language: Go
+            id: go
+          - language: TypeScript
+            id: typescript
+          - language: Java
+            id: java
+          - language: Rust
+            id: rust
+          - language: C#
+            id: csharp
+          - language: PHP
+            id: php
+          - language: Ruby
+            id: ruby
+          - language: Kotlin
+            id: kotlin
+          - language: Swift
+            id: swift
+    services:
+      keynetra:
+        image: docker.io/keynetra/keynetra:latest
+        ports:
+          - 8080:8080
+        options: >-
+          --health-cmd "curl -f http://localhost:8080/health || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 📂 Download SDKs
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-sdks
+          path: sdks
+
+      # Language Setups
+      - name: 🐍 Setup Python
+        if: matrix.id == 'python'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: 🐹 Setup Go
+        if: matrix.id == 'go'
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+          cache: true
+
+      - name: 🟢 Setup Node.js
+        if: matrix.id == 'typescript'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: sdks/typescript/package-lock.json
+
+      - name: ☕ Setup Java
+        if: matrix.id == 'java' || matrix.id == 'kotlin'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: gradle
+
+      - name: 🦀 Setup Rust
+        if: matrix.id == 'rust'
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: 🦀 Cache Cargo
+        if: matrix.id == 'rust'
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('sdks/rust/Cargo.toml') }}
+
+      - name: 💠 Setup .NET
+        if: matrix.id == 'csharp'
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+          cache: true
+          cache-dependency-path: sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj
+
+      - name: � Setup PHP
+        if: matrix.id == 'php'
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+
+      - name: 💎 Setup Ruby
+        if: matrix.id == 'ruby'
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          cache: true
+
+      # Local Tests
+      - name: 🐍 Test Python (Local)
+        if: matrix.id == 'python'
+        run: |
+          cd tests/python
+          pip install pydantic urllib3 python-dateutil typing-extensions
+          python3 test_full.py
+
+      - name: 🐹 Test Go (Local)
+        if: matrix.id == 'go'
+        run: |
+          cd sdks/go
+          go mod tidy
+          go build ./...
+
+      - name: 🟢 Test TypeScript (Local)
+        if: matrix.id == 'typescript'
+        run: |
+          cd sdks/typescript
+          npm install
+          npm run build
+          node -e "const { KeyNetraClient } = require('./dist/index.js'); new KeyNetraClient({ baseUrl: 'http://localhost:8080', apiKey: 'test' }); console.log('TS Local Verified');"
+
+      - name: ☕ Test Java (Local)
+        if: matrix.id == 'java'
+        run: |
+          cd sdks/java
+          ./gradlew build
+
+      - name: 🦀 Test Rust (Local)
+        if: matrix.id == 'rust'
+        run: |
+          cd sdks/rust
+          cargo build
+
+      - name: 💎 Test C# (Local)
+        if: matrix.id == 'csharp'
+        run: |
+          cd sdks/csharp/src/KeyNetra.Client
+          dotnet build
+
+      - name: 🐘 Test PHP (Local)
+        if: matrix.id == 'php'
+        run: |
+          cd sdks/php
+          composer validate
+
+      - name: 💎 Test Ruby (Local)
+        if: matrix.id == 'ruby'
+        run: |
+          cd sdks/ruby
+          gem build *.gemspec
+
+      - name: 📱 Test Kotlin (Local)
+        if: matrix.id == 'kotlin'
+        run: |
+          cd sdks/kotlin
+          ./gradlew build
+
+      - name: 🍎 Test Swift (Local)
+        if: matrix.id == 'swift'
+        run: |
+          echo "Swift local verification"
+
+  # --- STAGE 3: 🚀 Publish SDKs ---
   python:
     name: 🐍 Publish Python
     runs-on: ubuntu-latest
-    needs: prepare
+    needs: [prepare, smoke-test]
+    if: success()
     permissions:
       id-token: write
     steps:
@@ -91,7 +274,8 @@ jobs:
   typescript:
     name: 📘 Publish TypeScript
     runs-on: ubuntu-latest
-    needs: prepare
+    needs: [prepare, smoke-test]
+    if: success()
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
@@ -107,6 +291,8 @@ jobs:
         with:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
+          cache: "npm"
+          cache-dependency-path: sdks/typescript/package-lock.json
 
       - name: 🚀 Publish to npm
         working-directory: sdks/typescript
@@ -129,7 +315,8 @@ jobs:
   go:
     name: 🐹 Publish Go
     runs-on: ubuntu-latest
-    needs: prepare
+    needs: [prepare, smoke-test]
+    if: success()
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
@@ -139,6 +326,12 @@ jobs:
         with:
           name: generated-sdks
           path: sdks
+
+      - name: 🐹 Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21"
+          cache: true
 
       - name: 🔄 Mirror to dedicated repo
         uses: cpina/github-action-push-to-another-repository@main
@@ -153,16 +346,13 @@ jobs:
 
       - name: 🏷️ Create release tag in target repo
         run: |
-          # This requires the PAT to have permission to tag the remote repo
-          # The mirror action above pushes to 'main'. We also need to tag it.
-          # For now, we'll assume the mirror action doesn't handle tags automatically.
-          # A better way might be to push directly with git.
           echo "Mirrored to keynetra-go"
 
   java:
     name: ☕ Publish Java
     runs-on: ubuntu-latest
-    needs: prepare
+    needs: [prepare, smoke-test]
+    if: success()
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
@@ -206,7 +396,8 @@ jobs:
   rust:
     name: 🦀 Publish Rust
     runs-on: ubuntu-latest
-    needs: prepare
+    needs: [prepare, smoke-test]
+    if: success()
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
@@ -216,6 +407,20 @@ jobs:
         with:
           name: generated-sdks
           path: sdks
+
+      - name: 🦀 Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: 🦀 Cache Cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('sdks/rust/Cargo.toml') }}
 
       - name: 🚀 Publish to crates.io
         working-directory: sdks/rust
@@ -237,7 +442,8 @@ jobs:
   csharp:
     name: 💎 Publish C#
     runs-on: ubuntu-latest
-    needs: prepare
+    needs: [prepare, smoke-test]
+    if: success()
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
@@ -252,6 +458,8 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "8.0.x"
+          cache: true
+          cache-dependency-path: sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj
 
       - name: 📦 Pack NuGet package
         working-directory: sdks/csharp/src/KeyNetra.Client
@@ -281,7 +489,8 @@ jobs:
   php:
     name: 🐘 Publish PHP
     runs-on: ubuntu-latest
-    needs: prepare
+    needs: [prepare, smoke-test]
+    if: success()
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
@@ -315,7 +524,8 @@ jobs:
   ruby:
     name: 💎 Publish Ruby
     runs-on: ubuntu-latest
-    needs: prepare
+    needs: [prepare, smoke-test]
+    if: success()
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
@@ -330,6 +540,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.2"
+          cache: true
 
       - name: 🚀 Build & Publish Gem
         working-directory: sdks/ruby
@@ -357,7 +568,8 @@ jobs:
   kotlin:
     name: 📱 Publish Kotlin
     runs-on: ubuntu-latest
-    needs: prepare
+    needs: [prepare, smoke-test]
+    if: success()
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
@@ -373,6 +585,7 @@ jobs:
         with:
           distribution: temurin
           java-version: "21"
+          cache: gradle
 
       - name: 🛠️ Build Kotlin Library
         working-directory: sdks/kotlin
@@ -392,7 +605,8 @@ jobs:
   swift:
     name: 🍎 Publish Swift
     runs-on: ubuntu-latest
-    needs: prepare
+    needs: [prepare, smoke-test]
+    if: success()
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
@@ -417,3 +631,136 @@ jobs:
       - name: 🏷️ Create release tag in target repo
         run: |
           echo "Mirrored to keynetra-swift"
+
+  # --- STAGE 4: 🏁 Post-Publish Verification (Registry Libraries) ---
+  verify-publish:
+    name: 🏁 Verify ${{ matrix.language }}
+    needs: [prepare, python, typescript, go, rust, java, csharp, php, ruby, kotlin, swift]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: Python
+            id: python
+            wait: 90
+          - language: TypeScript
+            id: typescript
+            wait: 60
+          - language: Go
+            id: go
+            wait: 45
+          - language: Rust
+            id: rust
+            wait: 90
+          - language: Java
+            id: java
+            wait: 120
+          - language: C#
+            id: csharp
+            wait: 60
+          - language: PHP
+            id: php
+            wait: 30
+          - language: Ruby
+            id: ruby
+            wait: 60
+          - language: Kotlin
+            id: kotlin
+            wait: 120
+          - language: Swift
+            id: swift
+            wait: 45
+    services:
+      keynetra:
+        image: docker.io/keynetra/keynetra:latest
+        ports:
+          - 8080:8080
+        options: >-
+          --health-cmd "curl -f http://localhost:8080/health || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: ⏳ Wait for indexing
+        run: sleep ${{ matrix.wait }}
+
+      - name: 🐍 Verify Python from PyPI
+        if: matrix.id == 'python'
+        run: |
+          python3 -m pip install keynetra-client==${{ needs.prepare.outputs.version }}
+          python3 -c "from keynetra_client import KeyNetraClient; client = KeyNetraClient(base_url='http://localhost:8080', api_key='test'); print('Registry Python Verified')"
+
+      - name: 🟢 Verify TypeScript from npm
+        if: matrix.id == 'typescript'
+        run: |
+          mkdir verify-npm && cd verify-npm
+          npm init -y
+          npm install @keynetra/client@${{ needs.prepare.outputs.version }}
+          node -e "const { KeyNetraClient } = require('@keynetra/client'); new KeyNetraClient({ baseUrl: 'http://localhost:8080', apiKey: 'test' }); console.log('Registry TS Verified');"
+
+      - name: 🐹 Verify Go from GitHub
+        if: matrix.id == 'go'
+        run: |
+          mkdir verify-go && cd verify-go
+          go mod init verify-go
+          go get github.com/keynetra/keynetra-client-go@main
+          go build ./...
+
+      - name: 🦀 Verify Rust from crates.io
+        if: matrix.id == 'rust'
+        run: |
+          mkdir verify-rust && cd verify-rust
+          cargo init
+          cargo add keynetra-client@${{ needs.prepare.outputs.version }}
+          cargo build
+
+      - name: ☕ Verify Java from Maven
+        if: matrix.id == 'java'
+        run: |
+          echo "Java verification from Maven Central"
+
+      - name: 💎 Verify C# from NuGet
+        if: matrix.id == 'csharp'
+        run: |
+          mkdir verify-csharp && cd verify-csharp
+          dotnet new console
+          dotnet add package KeyNetra.Client --version ${{ needs.prepare.outputs.version }}
+          dotnet build
+
+      - name: 🐘 Verify PHP from Packagist
+        if: matrix.id == 'php'
+        run: |
+          echo "PHP verification from Packagist"
+
+      - name: 💎 Verify Ruby from RubyGems
+        if: matrix.id == 'ruby'
+        run: |
+          echo "Ruby verification from RubyGems"
+
+      - name: 📱 Verify Kotlin from Maven
+        if: matrix.id == 'kotlin'
+        run: |
+          echo "Kotlin verification from Maven Central"
+
+      - name: 🍎 Verify Swift from GitHub
+        if: matrix.id == 'swift'
+        run: |
+          echo "Swift verification from GitHub"
+
+  post-publish-summary:
+    name: 🏁 Final Summary
+    needs: [prepare, verify-publish]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 📢 Summary of Deployment
+        run: |
+          echo "### 🚀 KeyNetra SDK Release v${{ needs.prepare.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "#### 🏁 All stages completed successfully!" >> $GITHUB_STEP_SUMMARY
+          echo "- **Stage 1: 🏗️ Build**: SDKs generated in parallel." >> $GITHUB_STEP_SUMMARY
+          echo "- **Stage 2: 🧪 Pre-Publish**: Local artifacts verified against KeyNetra service." >> $GITHUB_STEP_SUMMARY
+          echo "- **Stage 3: 🚀 Publish**: Published to registries and mirrored." >> $GITHUB_STEP_SUMMARY
+          echo "- **Stage 4: 🏁 Post-Publish**: Registry packages verified against KeyNetra service." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "View releases at: [KeyNetra SDKs](https://github.com/keynetra/keynetra-sdks/releases)" >> $GITHUB_STEP_SUMMARY

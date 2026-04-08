@@ -3,7 +3,7 @@ import io.keynetra.client.KeyNetraClient;
 public class TestInstantiation {
     public static void main(String[] args) {
         try {
-            KeyNetraClient client = new KeyNetraClient("https://api.keynetra.com", "test-key");
+            KeyNetraClient client = new KeyNetraClient("http://localhost:8080", "test-key");
             if (client != null) {
                 System.out.println("Java SDK: Client instantiated successfully.");
             }
