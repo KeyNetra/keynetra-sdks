@@ -29,14 +29,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
 
       - name: 📦 Install OpenAPI Generator
         run: |
           echo "Installing openapi-generator-cli..."
-          if [ ! -d "node_modules" ]; then
-            npm install @openapitools/openapi-generator-cli
-          fi
+          npm install @openapitools/openapi-generator-cli
           echo "$(pwd)/node_modules/.bin" >> $GITHUB_PATH
 
       - name: 🚀 Run SDK Generation
