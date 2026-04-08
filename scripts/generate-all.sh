@@ -123,7 +123,7 @@ generate_sdk_go() {
     -g "${generator}" \
     -o "${output_dir}" \
     -c "${config_file}" \
-    --type-mappings=null=interface{},object=interface{},any=interface{},Any=interface{},AnyOf=interface{},OneOf=interface{} \
+--type-mappings=null=interface{},object=map[string]interface{},Any=interface{} \
     --additional-properties=disallowAdditionalPropertiesIfNotPresent=false \
     --skip-validate-spec > "${log_file}" 2>&1; then
     log_success "${name} SDK generated successfully."
