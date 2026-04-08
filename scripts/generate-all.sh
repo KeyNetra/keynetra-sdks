@@ -229,6 +229,7 @@ generate_sdk_rust() {
     -g "${generator}" \
     -o "${output_dir}" \
     -c "${config_file}" \
+    --type-mappings=null=serde_json::Value,Null=serde_json::Value \
     --skip-validate-spec > "${log_file}" 2>&1; then
     log_success "${name} SDK generated successfully."
     rm -f "${log_file}"
@@ -324,6 +325,34 @@ generate_sdk_php() {
   fi
 }
 
+generate_sdk_swift() {
+  local generator="swift6"
+  local output_dir="${ROOT_DIR}/sdks/swift"
+  local config_file="${ROOT_DIR}/templates/swift-config.yaml"
+  local name="Swift"
+  local log_file="${ROOT_DIR}/sdks/gen-Swift.log"
+
+  log_step "Generating ${name} SDK..."
+  rm -rf "${output_dir}"
+  mkdir -p "${output_dir}"
+
+  if openapi-generator-cli generate \
+    -i "${SPEC_FILE}" \
+    -g "${generator}" \
+    -o "${output_dir}" \
+    -c "${config_file}" \
+    --type-mappings=null=Any \
+    --skip-validate-spec > "${log_file}" 2>&1; then
+    log_success "${name} SDK generated successfully."
+    rm -f "${log_file}"
+  else
+    log_error "Failed to generate ${name} SDK. See details below:"
+    cat "${log_file}"
+    rm -f "${log_file}"
+    return 1
+  fi
+}
+
 # --- Execution ---
 echo -e "${YELLOW}${ROCKET}  Starting KeyNetra SDK Generation v${SDK_VERSION}${NC}"
 
@@ -343,7 +372,7 @@ FAIL=0
 (generate_sdk_php) || FAIL=1 &
 (generate_sdk_ruby) || FAIL=1 &
 (generate_sdk_kotlin) || FAIL=1 &
-(generate_sdk swift6 "${ROOT_DIR}/sdks/swift" "${ROOT_DIR}/templates/swift-config.yaml" "Swift") || FAIL=1 &
+(generate_sdk_swift) || FAIL=1 &
 
 # Wait for all background jobs to finish
 for job in $(jobs -p); do

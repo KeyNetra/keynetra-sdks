@@ -180,7 +180,6 @@ const decision = await client.access.checkAccess({
   "version": "${SDK_VERSION}",
   "description": "Official TypeScript Client SDK for the KeyNetra authorization platform.",
   "license": "Apache-2.0",
-  "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -208,8 +207,8 @@ EOF
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "ES2022",
-    "moduleResolution": "Bundler",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "declaration": true,
     "outDir": "dist",
     "rootDir": "src",
@@ -283,12 +282,12 @@ decision, _, err := client.Access.CheckAccess(context.Background()).
 package keynetra
 
 type KeyNetraClient struct {
-       Access     *AccessApiService
-       Auth       *AuthApiService
-       Dev        *DevApiService
-       Health     *HealthApiService
-       Management *ManagementApiService
-       Playground *PlaygroundApiService
+       Access     *AccessAPIService
+       Auth       *AuthAPIService
+       Dev        *DevAPIService
+       Health     *HealthAPIService
+       Management *ManagementAPIService
+       Playground *PlaygroundAPIService
        client     *APIClient
 }
 
@@ -300,12 +299,12 @@ func NewKeyNetraClient(baseURL string, apiKey string) *KeyNetraClient {
 
        client := NewAPIClient(cfg)
        return &KeyNetraClient{
-               Access:     client.AccessApi,
-               Auth:       client.AuthApi,
-               Dev:        client.DevApi,
-               Health:     client.HealthApi,
-               Management: client.ManagementApi,
-               Playground: client.PlaygroundApi,
+               Access:     client.AccessAPI,
+               Auth:       client.AuthAPI,
+               Dev:        client.DevAPI,
+               Health:     client.HealthAPI,
+               Management: client.ManagementAPI,
+               Playground: client.PlaygroundAPI,
                client:     client,
        }
 }
@@ -478,6 +477,7 @@ var decision = await client.Access.CheckAccessAsync(new AccessRequest {
 namespace KeyNetra.Client;
 
 using KeyNetra.Client.Api;
+using KeyNetra.Client.Client;
 
 public sealed class KeyNetraClient
 {
@@ -498,13 +498,14 @@ public sealed class KeyNetraClient
         configuration.DefaultHeaders["X-API-Key"] = apiKey;
         configuration.DefaultHeaders["Authorization"] = $"Bearer {apiKey}";
         
-        var apiClient = new ApiClient(configuration);
-        Access = new AccessApi(apiClient);
-        Auth = new AuthApi(apiClient);
-        Dev = new DevApi(apiClient);
-        Health = new HealthApi(apiClient);
-        Management = new ManagementApi(apiClient);
-        Playground = new PlaygroundApi(apiClient);
+        // Use the simplified client initialization if possible
+        // Based on common OpenAPI C# generator patterns
+        Access = new AccessApi(configuration);
+        Auth = new AuthApi(configuration);
+        Dev = new DevApi(configuration);
+        Health = new HealthApi(configuration);
+        Management = new ManagementApi(configuration);
+        Playground = new PlaygroundApi(configuration);
     }
 }
 EOF

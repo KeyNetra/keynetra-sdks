@@ -186,6 +186,7 @@ jobs:
         if: matrix.id == 'java'
         run: |
           cd sdks/java
+          chmod +x ./gradlew
           ./gradlew build
 
       - name: 🦀 Test Rust (Local)
@@ -216,6 +217,7 @@ jobs:
         if: matrix.id == 'kotlin'
         run: |
           cd sdks/kotlin
+          chmod +x ./gradlew
           ./gradlew build
 
       - name: 🍎 Test Swift (Local)
@@ -376,7 +378,9 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
-        run: ./gradlew publish
+        run: |
+          chmod +x ./gradlew
+          ./gradlew publish
 
       - name: 🔄 Mirror to dedicated repo
         uses: cpina/github-action-push-to-another-repository@main
@@ -585,7 +589,9 @@ jobs:
 
       - name: 🛠️ Build Kotlin Library
         working-directory: sdks/kotlin
-        run: ./gradlew build
+        run: |
+          chmod +x ./gradlew
+          ./gradlew build
 
       - name: 🔄 Mirror to dedicated repo
         uses: cpina/github-action-push-to-another-repository@main

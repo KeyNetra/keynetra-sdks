@@ -3,6 +3,7 @@ packageVersion: 0.1.1
 packageCompany: KeyNetra
 packageAuthors: KeyNetra
 targetFramework: net8.0
+library: restsharp
 nullableReferenceTypes: true
 optionalProjectFile: false
 packageTags: "keynetra;authorization;authz;permissions;sdk"
