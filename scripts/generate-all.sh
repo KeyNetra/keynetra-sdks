@@ -140,12 +140,14 @@ generate_sdk_kotlin() {
   rm -rf "${output_dir}"
   mkdir -p "${output_dir}"
 
+  # Kotlin-specific mappings to handle @Contextual for Any?
   if openapi-generator-cli generate \
     -i "${SPEC_FILE}" \
     -g "${generator}" \
     -o "${output_dir}" \
     -c "${config_file}" \
-    --type-mappings=null=Any \
+    --type-mappings=null=Any,Any=Any,object=Any \
+    --additional-properties=enumPropertyNaming=original \
     --skip-validate-spec > "${log_file}" 2>&1; then
     log_success "${name} SDK generated successfully."
     rm -f "${log_file}"
@@ -224,6 +226,7 @@ generate_sdk_rust() {
   rm -rf "${output_dir}"
   mkdir -p "${output_dir}"
 
+  # Rust-specific mappings to handle 'null' types
   if openapi-generator-cli generate \
     -i "${SPEC_FILE}" \
     -g "${generator}" \

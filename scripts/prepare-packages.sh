@@ -239,12 +239,12 @@ export class KeyNetraClient {
   public readonly management: ManagementApi;
   public readonly playground: PlaygroundApi;
 
-  constructor(base_url: string, api_key: string) {
+  constructor(options: { baseUrl: string, apiKey: string }) {
     const configuration = new Configuration({
-      basePath: base_url,
+      basePath: options.baseUrl,
       headers: {
-        "X-API-Key": api_key,
-        Authorization: `Bearer ${api_key}`,
+        "X-API-Key": options.apiKey,
+        Authorization: `Bearer ${options.apiKey}`,
       },
     });
 
@@ -298,13 +298,14 @@ func NewKeyNetraClient(baseURL string, apiKey string) *KeyNetraClient {
        cfg.DefaultHeader["Authorization"] = "Bearer " + apiKey
 
        client := NewAPIClient(cfg)
+       
        return &KeyNetraClient{
-               Access:     client.AccessAPI,
-               Auth:       client.AuthAPI,
-               Dev:        client.DevAPI,
-               Health:     client.HealthAPI,
-               Management: client.ManagementAPI,
-               Playground: client.PlaygroundAPI,
+               Access:     client.AccessAPI.(*AccessAPIService),
+               Auth:       client.AuthAPI.(*AuthAPIService),
+               Dev:        client.DevAPI.(*DevAPIService),
+               Health:     client.HealthAPI.(*HealthAPIService),
+               Management: client.ManagementAPI.(*ManagementAPIService),
+               Playground: client.PlaygroundAPI.(*PlaygroundAPIService),
                client:     client,
        }
 }
@@ -316,6 +317,11 @@ prepare_java() {
   mkdir -p "${ROOT_DIR}/sdks/java/src/main/java/io/keynetra/client"
   local repo_url="https://github.com/keynetra/keynetra-client-java"
   local docs_url="https://docs.keynetra.com/sdks/java"
+
+  # Ensure gradlew is executable
+  if [ -f "${ROOT_DIR}/sdks/java/gradlew" ]; then
+    chmod +x "${ROOT_DIR}/sdks/java/gradlew"
+  fi
 
   generate_readme "Java" "keynetra-client" "<dependency>
   <groupId>io.keynetra</groupId>
@@ -530,6 +536,20 @@ prepare_ruby() {
   log_step "Ruby"
   local repo_url="https://github.com/keynetra/keynetra-client-ruby"
   local docs_url="https://docs.keynetra.com/sdks/ruby"
+  
+  # Ensure the directory exists
+  mkdir -p "${ROOT_DIR}/sdks/ruby/lib/keynetra-client"
+  
+  # The generator might not have created the version file if we are using custom templates or specific options
+  # Let's ensure a version file exists so the gemspec doesn't fail
+  if [ ! -f "${ROOT_DIR}/sdks/ruby/lib/keynetra-client/version.rb" ]; then
+    cat > "${ROOT_DIR}/sdks/ruby/lib/keynetra-client/version.rb" <<EOF
+module KeyNetra
+  VERSION = '${SDK_VERSION}'
+end
+EOF
+  fi
+
   generate_readme "Ruby" "keynetra-client" "gem install keynetra-client" "require 'keynetra-client'
 
 client = KeyNetra::KeyNetraClient.new(
@@ -552,6 +572,11 @@ prepare_kotlin() {
   log_step "Kotlin"
   local repo_url="https://github.com/keynetra/keynetra-client-kotlin"
   local docs_url="https://docs.keynetra.com/sdks/kotlin"
+
+  # Ensure gradlew is executable
+  if [ -f "${ROOT_DIR}/sdks/kotlin/gradlew" ]; then
+    chmod +x "${ROOT_DIR}/sdks/kotlin/gradlew"
+  fi
   generate_readme "Kotlin" "keynetra-client-kotlin" "implementation(\"io.keynetra:keynetra-client-kotlin:${SDK_VERSION}\")" "import io.keynetra.client.KeyNetraClient
 
 val client = KeyNetraClient(
