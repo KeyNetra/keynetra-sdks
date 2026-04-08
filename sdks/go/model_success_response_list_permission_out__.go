@@ -23,7 +23,7 @@ var _ MappedNullable = &SuccessResponseListPermissionOut{}
 type SuccessResponseListPermissionOut struct {
 	Data []PermissionOut `json:"data"`
 	Meta *MetaBody `json:"meta,omitempty"`
-	Error *nil `json:"error,omitempty"`
+	Error *interface{} `json:"error,omitempty"`
 }
 
 type _SuccessResponseListPermissionOut SuccessResponseListPermissionOut
@@ -103,9 +103,9 @@ func (o *SuccessResponseListPermissionOut) SetMeta(v MetaBody) {
 }
 
 // GetError returns the Error field value if set, zero value otherwise.
-func (o *SuccessResponseListPermissionOut) GetError() nil {
+func (o *SuccessResponseListPermissionOut) GetError() interface{} {
 	if o == nil || IsNil(o.Error) {
-		var ret nil
+		var ret interface{}
 		return ret
 	}
 	return *o.Error
@@ -113,7 +113,7 @@ func (o *SuccessResponseListPermissionOut) GetError() nil {
 
 // GetErrorOk returns a tuple with the Error field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SuccessResponseListPermissionOut) GetErrorOk() (*nil, bool) {
+func (o *SuccessResponseListPermissionOut) GetErrorOk() (*interface{}, bool) {
 	if o == nil || IsNil(o.Error) {
 		return nil, false
 	}
@@ -129,8 +129,8 @@ func (o *SuccessResponseListPermissionOut) HasError() bool {
 	return false
 }
 
-// SetError gets a reference to the given nil and assigns it to the Error field.
-func (o *SuccessResponseListPermissionOut) SetError(v nil) {
+// SetError gets a reference to the given interface{} and assigns it to the Error field.
+func (o *SuccessResponseListPermissionOut) SetError(v interface{}) {
 	o.Error = &v
 }
 

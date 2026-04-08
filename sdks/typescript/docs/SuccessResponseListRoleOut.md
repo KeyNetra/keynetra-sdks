@@ -8,7 +8,7 @@ Name | Type
 ------------ | -------------
 `data` | [Array&lt;RoleOut&gt;](RoleOut.md)
 `meta` | [MetaBody](MetaBody.md)
-`error` | [Null](Null.md)
+`error` | any
 
 ## Example
 

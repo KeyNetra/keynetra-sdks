@@ -8,7 +8,7 @@
 | **msg** | **kotlin.String** |  |  |
 | **type** | **kotlin.String** |  |  |
 | **input** | [**kotlin.Any**](.md) |  |  [optional] |
-| **ctx** | **kotlin.String** |  |  [optional] |
+| **ctx** | [**kotlin.Any**](.md) |  |  [optional] |
 
 
 

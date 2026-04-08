@@ -1,12 +1,12 @@
 package keynetra
 
 type KeyNetraClient struct {
-       Access     *AccessApiService
-       Auth       *AuthApiService
-       Dev        *DevApiService
-       Health     *HealthApiService
-       Management *ManagementApiService
-       Playground *PlaygroundApiService
+       Access     any
+       Auth       any
+       Dev        any
+       Health     any
+       Management any
+       Playground any
        client     *APIClient
 }
 
@@ -17,13 +17,14 @@ func NewKeyNetraClient(baseURL string, apiKey string) *KeyNetraClient {
        cfg.DefaultHeader["Authorization"] = "Bearer " + apiKey
 
        client := NewAPIClient(cfg)
+       
        return &KeyNetraClient{
-               Access:     client.AccessApi,
-               Auth:       client.AuthApi,
-               Dev:        client.DevApi,
-               Health:     client.HealthApi,
-               Management: client.ManagementApi,
-               Playground: client.PlaygroundApi,
+               Access:     client.AccessAPI,
+               Auth:       client.AuthAPI,
+               Dev:        client.DevAPI,
+               Health:     client.HealthAPI,
+               Management: client.ManagementAPI,
+               Playground: client.PlaygroundAPI,
                client:     client,
        }
 }

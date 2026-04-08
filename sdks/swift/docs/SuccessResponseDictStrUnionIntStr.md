@@ -5,7 +5,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **data** | [String: DataValue] |  | 
 **meta** | [**MetaBody**](MetaBody.md) |  | [optional] 
-**error** | [**Null**](Null.md) |  | [optional] 
+**error** | **Any** |  | [optional] 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

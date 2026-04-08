@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **Msg** | **string** |  | 
 **Type** | **string** |  | 
 **Input** | Pointer to **interface{}** |  | [optional] 
-**Ctx** | Pointer to **map[string]interface{}** |  | [optional] 
+**Ctx** | Pointer to **interface{}** |  | [optional] 
 
 ## Methods
 
@@ -126,20 +126,20 @@ HasInput returns a boolean if a field has been set.
 UnsetInput ensures that no value is present for Input, not even an explicit nil
 ### GetCtx
 
-`func (o *ValidationError) GetCtx() map[string]interface{}`
+`func (o *ValidationError) GetCtx() interface{}`
 
 GetCtx returns the Ctx field if non-nil, zero value otherwise.
 
 ### GetCtxOk
 
-`func (o *ValidationError) GetCtxOk() (*map[string]interface{}, bool)`
+`func (o *ValidationError) GetCtxOk() (*interface{}, bool)`
 
 GetCtxOk returns a tuple with the Ctx field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetCtx
 
-`func (o *ValidationError) SetCtx(v map[string]interface{})`
+`func (o *ValidationError) SetCtx(v interface{})`
 
 SetCtx sets Ctx field to given value.
 

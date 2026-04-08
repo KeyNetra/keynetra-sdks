@@ -9,7 +9,7 @@
 |------------ | ------------- | ------------- | -------------|
 |**data** | **Map&lt;String, Integer&gt;** |  |  |
 |**meta** | [**MetaBody**](MetaBody.md) |  |  [optional] |
-|**error** | **ModelNull** |  |  [optional] |
+|**error** | **Object** |  |  [optional] |
 
 
 

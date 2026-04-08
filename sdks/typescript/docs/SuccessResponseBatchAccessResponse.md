@@ -8,7 +8,7 @@ Name | Type
 ------------ | -------------
 `data` | [BatchAccessResponse](BatchAccessResponse.md)
 `meta` | [MetaBody](MetaBody.md)
-`error` | [Null](Null.md)
+`error` | any
 
 ## Example
 

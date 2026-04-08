@@ -8,7 +8,7 @@ Name | Type
 ------------ | -------------
 `data` | [AdminLoginResponse](AdminLoginResponse.md)
 `meta` | [MetaBody](MetaBody.md)
-`error` | [Null](Null.md)
+`error` | any
 
 ## Example
 

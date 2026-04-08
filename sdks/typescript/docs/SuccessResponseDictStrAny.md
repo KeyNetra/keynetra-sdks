@@ -8,7 +8,7 @@ Name | Type
 ------------ | -------------
 `data` | { [key: string]: any; }
 `meta` | [MetaBody](MetaBody.md)
-`error` | [Null](Null.md)
+`error` | any
 
 ## Example
 

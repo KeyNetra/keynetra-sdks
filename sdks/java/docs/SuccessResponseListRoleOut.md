@@ -9,7 +9,7 @@
 |------------ | ------------- | ------------- | -------------|
 |**data** | [**List&lt;RoleOut&gt;**](RoleOut.md) |  |  |
 |**meta** | [**MetaBody**](MetaBody.md) |  |  [optional] |
-|**error** | **ModelNull** |  |  [optional] |
+|**error** | **Object** |  |  [optional] |
 
 
 

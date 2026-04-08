@@ -8,7 +8,7 @@ Name | Type
 ------------ | -------------
 `data` | [Array&lt;PolicyOut&gt;](PolicyOut.md)
 `meta` | [MetaBody](MetaBody.md)
-`error` | [Null](Null.md)
+`error` | any
 
 ## Example
 

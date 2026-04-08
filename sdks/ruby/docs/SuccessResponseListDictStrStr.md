@@ -6,7 +6,7 @@
 | ---- | ---- | ----------- | ----- |
 | **data** | **Array&lt;Hash&lt;String, String&gt;&gt;** |  |  |
 | **meta** | [**MetaBody**](MetaBody.md) |  | [optional] |
-| **error** | [**Null**](Null.md) |  | [optional] |
+| **error** | **Object** |  | [optional] |
 
 ## Example
 

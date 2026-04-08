@@ -23,7 +23,7 @@ var _ MappedNullable = &SuccessResponseDictStrObject{}
 type SuccessResponseDictStrObject struct {
 	Data map[string]interface{} `json:"data"`
 	Meta *MetaBody `json:"meta,omitempty"`
-	Error *nil `json:"error,omitempty"`
+	Error *interface{} `json:"error,omitempty"`
 }
 
 type _SuccessResponseDictStrObject SuccessResponseDictStrObject
@@ -103,9 +103,9 @@ func (o *SuccessResponseDictStrObject) SetMeta(v MetaBody) {
 }
 
 // GetError returns the Error field value if set, zero value otherwise.
-func (o *SuccessResponseDictStrObject) GetError() nil {
+func (o *SuccessResponseDictStrObject) GetError() interface{} {
 	if o == nil || IsNil(o.Error) {
-		var ret nil
+		var ret interface{}
 		return ret
 	}
 	return *o.Error
@@ -113,7 +113,7 @@ func (o *SuccessResponseDictStrObject) GetError() nil {
 
 // GetErrorOk returns a tuple with the Error field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *SuccessResponseDictStrObject) GetErrorOk() (*nil, bool) {
+func (o *SuccessResponseDictStrObject) GetErrorOk() (*interface{}, bool) {
 	if o == nil || IsNil(o.Error) {
 		return nil, false
 	}
@@ -129,8 +129,8 @@ func (o *SuccessResponseDictStrObject) HasError() bool {
 	return false
 }
 
-// SetError gets a reference to the given nil and assigns it to the Error field.
-func (o *SuccessResponseDictStrObject) SetError(v nil) {
+// SetError gets a reference to the given interface{} and assigns it to the Error field.
+func (o *SuccessResponseDictStrObject) SetError(v interface{}) {
 	o.Error = &v
 }
 

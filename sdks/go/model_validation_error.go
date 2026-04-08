@@ -25,7 +25,7 @@ type ValidationError struct {
 	Msg string `json:"msg"`
 	Type string `json:"type"`
 	Input interface{} `json:"input,omitempty"`
-	Ctx map[string]interface{} `json:"ctx,omitempty"`
+	Ctx interface{} `json:"ctx,omitempty"`
 }
 
 type _ValidationError ValidationError
@@ -156,9 +156,9 @@ func (o *ValidationError) SetInput(v interface{}) {
 }
 
 // GetCtx returns the Ctx field value if set, zero value otherwise.
-func (o *ValidationError) GetCtx() map[string]interface{} {
+func (o *ValidationError) GetCtx() interface{} {
 	if o == nil || IsNil(o.Ctx) {
-		var ret map[string]interface{}
+		var ret interface{}
 		return ret
 	}
 	return o.Ctx
@@ -166,9 +166,9 @@ func (o *ValidationError) GetCtx() map[string]interface{} {
 
 // GetCtxOk returns a tuple with the Ctx field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *ValidationError) GetCtxOk() (map[string]interface{}, bool) {
+func (o *ValidationError) GetCtxOk() (interface{}, bool) {
 	if o == nil || IsNil(o.Ctx) {
-		return map[string]interface{}{}, false
+		return interface{}{}, false
 	}
 	return o.Ctx, true
 }
@@ -182,8 +182,8 @@ func (o *ValidationError) HasCtx() bool {
 	return false
 }
 
-// SetCtx gets a reference to the given map[string]interface{} and assigns it to the Ctx field.
-func (o *ValidationError) SetCtx(v map[string]interface{}) {
+// SetCtx gets a reference to the given interface{} and assigns it to the Ctx field.
+func (o *ValidationError) SetCtx(v interface{}) {
 	o.Ctx = v
 }
 

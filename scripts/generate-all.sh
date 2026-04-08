@@ -121,7 +121,7 @@ generate_sdk_go() {
     -g "${generator}" \
     -o "${output_dir}" \
     -c "${config_file}" \
-    --type-mappings=null=any,Any=any,object=any,AnyOfstringinteger=any \
+    --type-mappings=null=interface{},object=interface{} \
     --skip-validate-spec > "${log_file}" 2>&1; then
     log_success "${name} SDK generated successfully."
     rm -f "${log_file}"
@@ -150,8 +150,8 @@ generate_sdk_kotlin() {
     -g "${generator}" \
     -o "${output_dir}" \
     -c "${config_file}" \
-    --type-mappings=null=Any,Any=Any,object=Any \
-    --additional-properties=enumPropertyNaming=original \
+    --type-mappings=null=kotlin.Any,Any=kotlin.Any,object=kotlin.Any \
+    --additional-properties=enumPropertyNaming=original,library=multiplatform \
     --skip-validate-spec > "${log_file}" 2>&1; then
     log_success "${name} SDK generated successfully."
     rm -f "${log_file}"

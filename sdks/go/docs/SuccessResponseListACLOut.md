@@ -6,7 +6,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Data** | [**[]ACLOut**](ACLOut.md) |  | 
 **Meta** | Pointer to [**MetaBody**](MetaBody.md) |  | [optional] 
-**Error** | Pointer to [**nil**](nil.md) |  | [optional] 
+**Error** | Pointer to **interface{}** |  | [optional] 
 
 ## Methods
 
@@ -74,20 +74,20 @@ HasMeta returns a boolean if a field has been set.
 
 ### GetError
 
-`func (o *SuccessResponseListACLOut) GetError() nil`
+`func (o *SuccessResponseListACLOut) GetError() interface{}`
 
 GetError returns the Error field if non-nil, zero value otherwise.
 
 ### GetErrorOk
 
-`func (o *SuccessResponseListACLOut) GetErrorOk() (*nil, bool)`
+`func (o *SuccessResponseListACLOut) GetErrorOk() (*interface{}, bool)`
 
 GetErrorOk returns a tuple with the Error field if it's non-nil, zero value otherwise
 and a boolean to check if the value has been set.
 
 ### SetError
 
-`func (o *SuccessResponseListACLOut) SetError(v nil)`
+`func (o *SuccessResponseListACLOut) SetError(v interface{})`
 
 SetError sets Error field to given value.
 

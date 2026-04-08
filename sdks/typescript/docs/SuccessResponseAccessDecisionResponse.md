@@ -8,7 +8,7 @@ Name | Type
 ------------ | -------------
 `data` | [AccessDecisionResponse](AccessDecisionResponse.md)
 `meta` | [MetaBody](MetaBody.md)
-`error` | [Null](Null.md)
+`error` | any
 
 ## Example
 

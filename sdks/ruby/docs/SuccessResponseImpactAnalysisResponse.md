@@ -6,7 +6,7 @@
 | ---- | ---- | ----------- | ----- |
 | **data** | [**ImpactAnalysisResponse**](ImpactAnalysisResponse.md) |  |  |
 | **meta** | [**MetaBody**](MetaBody.md) |  | [optional] |
-| **error** | [**Null**](Null.md) |  | [optional] |
+| **error** | **Object** |  | [optional] |
 
 ## Example
 

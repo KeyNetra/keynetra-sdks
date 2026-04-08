@@ -46,7 +46,7 @@ jobs:
 
   # --- STAGE 2: 🧪 Pre-Publish Verification (Local Artifacts) ---
   smoke-test:
-    name: 🧪 Test ${{ matrix.language }}
+    name: "🧪 Local: ${{ matrix.language }}"
     needs: prepare
     runs-on: ubuntu-latest
     strategy:
@@ -174,13 +174,14 @@ jobs:
           go mod tidy
           go build ./...
 
-      - name: 🟢 Test TypeScript (Local)
+      - name: 🟢 Test TypeScript (Local Artifact)
         if: matrix.id == 'typescript'
         run: |
           cd sdks/typescript
           npm install
           npm run build
-          node -e "const { KeyNetraClient } = require('./dist/index.js'); new KeyNetraClient({ baseUrl: 'http://localhost:8080', apiKey: 'test' }); console.log('TS Local Verified');"
+          # Check for both named and default exports
+          node -e "const pkg = require('./dist/index.js'); const Client = pkg.KeyNetraClient || pkg.default?.KeyNetraClient; if (!Client) throw new Error('KeyNetraClient not found'); new Client({ baseUrl: 'http://localhost:8080', apiKey: 'test' }); console.log('TS Local Verified');"
 
       - name: ☕ Test Java (Local)
         if: matrix.id == 'java'
@@ -636,7 +637,7 @@ jobs:
 
   # --- STAGE 4: 🏁 Post-Publish Verification (Registry Libraries) ---
   verify-publish:
-    name: 🏁 Verify ${{ matrix.language }}
+    name: "🏁 Registry: ${{ matrix.language }}"
     needs: [prepare, python, typescript, go, rust, java, csharp, php, ruby, kotlin, swift]
     runs-on: ubuntu-latest
     strategy:
@@ -699,7 +700,8 @@ jobs:
           mkdir verify-npm && cd verify-npm
           npm init -y
           npm install @keynetra/client@${{ needs.prepare.outputs.version }}
-          node -e "const { KeyNetraClient } = require('@keynetra/client'); new KeyNetraClient({ baseUrl: 'http://localhost:8080', apiKey: 'test' }); console.log('Registry TS Verified');"
+          # Check for both named and default exports
+          node -e "const pkg = require('@keynetra/client'); const Client = pkg.KeyNetraClient || pkg.default?.KeyNetraClient; if (!Client) throw new Error('KeyNetraClient not found'); new Client({ baseUrl: 'http://localhost:8080', apiKey: 'test' }); console.log('Registry TS Verified');"
 
       - name: 🐹 Verify Go from GitHub
         if: matrix.id == 'go'

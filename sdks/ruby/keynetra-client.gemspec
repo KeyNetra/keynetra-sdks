@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.authors     = ["SainathSapa"]
   s.email       = ["info.djsai@gmail.com"]
   s.homepage    = "https://github.com/keynetra/keynetra-client-ruby"
-  s.summary     = "KeyNetra Ruby Gem"
+  s.summary     = "Official Ruby Client SDK for the KeyNetra authorization platform."
   s.description = "Official Ruby SDK for the KeyNetra authorization platform."
   s.license     = "Apache-2.0"
   s.required_ruby_version = ">= 2.7"

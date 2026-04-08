@@ -257,6 +257,11 @@ export class KeyNetraClient {
   }
 }
 EOF
+
+  # Ensure the wrapper is exported in the main index
+  if [ -f "${ROOT_DIR}/sdks/typescript/src/index.ts" ]; then
+    echo "export * from './keynetra-client';" >> "${ROOT_DIR}/sdks/typescript/src/index.ts"
+  fi
 }
 
 prepare_go() {
@@ -282,12 +287,12 @@ decision, _, err := client.Access.CheckAccess(context.Background()).
 package keynetra
 
 type KeyNetraClient struct {
-       Access     *AccessAPIService
-       Auth       *AuthAPIService
-       Dev        *DevAPIService
-       Health     *HealthAPIService
-       Management *ManagementAPIService
-       Playground *PlaygroundAPIService
+       Access     any
+       Auth       any
+       Dev        any
+       Health     any
+       Management any
+       Playground any
        client     *APIClient
 }
 
@@ -300,12 +305,12 @@ func NewKeyNetraClient(baseURL string, apiKey string) *KeyNetraClient {
        client := NewAPIClient(cfg)
        
        return &KeyNetraClient{
-               Access:     client.AccessAPI.(*AccessAPIService),
-               Auth:       client.AuthAPI.(*AuthAPIService),
-               Dev:        client.DevAPI.(*DevAPIService),
-               Health:     client.HealthAPI.(*HealthAPIService),
-               Management: client.ManagementAPI.(*ManagementAPIService),
-               Playground: client.PlaygroundAPI.(*PlaygroundAPIService),
+               Access:     client.AccessAPI,
+               Auth:       client.AuthAPI,
+               Dev:        client.DevAPI,
+               Health:     client.HealthAPI,
+               Management: client.ManagementAPI,
+               Playground: client.PlaygroundAPI,
                client:     client,
        }
 }

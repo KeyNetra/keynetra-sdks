@@ -8,7 +8,7 @@ Name | Type
 ------------ | -------------
 `data` | [ACLOut](ACLOut.md)
 `meta` | [MetaBody](MetaBody.md)
-`error` | [Null](Null.md)
+`error` | any
 
 ## Example
 
