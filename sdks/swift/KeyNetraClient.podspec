@@ -5,7 +5,7 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = '11.0'
   s.watchos.deployment_target = '4.0'
   s.version = '0.1.1'
-  s.source = https://github.com/keynetra/keynetra-sdks
+  s.source = https://github.com/keynetra/keynetra-client-swift
   s.authors = 'KeyNetra Engineering'
   s.license = Apache-2.0
   s.homepage = 'https://keynetra.com'

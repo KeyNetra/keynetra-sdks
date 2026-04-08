@@ -84,7 +84,7 @@ jobs:
         with:
           source-directory: 'sdks/python'
           destination-github-username: 'keynetra'
-          destination-repository-name: 'keynetra-python'
+          destination-repository-name: 'keynetra-client-python'
           user-email: business.keynetra@gmail.com
           target-branch: main
 
@@ -122,7 +122,7 @@ jobs:
         with:
           source-directory: 'sdks/typescript'
           destination-github-username: 'keynetra'
-          destination-repository-name: 'keynetra-typescript'
+          destination-repository-name: 'keynetra-client-typescript'
           user-email: business.keynetra@gmail.com
           target-branch: main
 
@@ -147,7 +147,7 @@ jobs:
         with:
           source-directory: 'sdks/go'
           destination-github-username: 'keynetra'
-          destination-repository-name: 'keynetra-go'
+          destination-repository-name: 'keynetra-client-go'
           user-email: business.keynetra@gmail.com
           target-branch: main
 
@@ -199,7 +199,7 @@ jobs:
         with:
           source-directory: 'sdks/java'
           destination-github-username: 'keynetra'
-          destination-repository-name: 'keynetra-java'
+          destination-repository-name: 'keynetra-client-java'
           user-email: business.keynetra@gmail.com
           target-branch: main
 
@@ -230,7 +230,7 @@ jobs:
         with:
           source-directory: 'sdks/rust'
           destination-github-username: 'keynetra'
-          destination-repository-name: 'keynetra-rust'
+          destination-repository-name: 'keynetra-client-rust'
           user-email: business.keynetra@gmail.com
           target-branch: main
 
@@ -274,7 +274,7 @@ jobs:
         with:
           source-directory: 'sdks/csharp'
           destination-github-username: 'keynetra'
-          destination-repository-name: 'keynetra-csharp'
+          destination-repository-name: 'keynetra-client-csharp'
           user-email: business.keynetra@gmail.com
           target-branch: main
 
@@ -308,7 +308,7 @@ jobs:
         with:
           source-directory: 'sdks/php'
           destination-github-username: 'keynetra'
-          destination-repository-name: 'keynetra-php'
+          destination-repository-name: 'keynetra-client-php'
           user-email: business.keynetra@gmail.com
           target-branch: main
 
@@ -350,7 +350,7 @@ jobs:
         with:
           source-directory: 'sdks/ruby'
           destination-github-username: 'keynetra'
-          destination-repository-name: 'keynetra-ruby'
+          destination-repository-name: 'keynetra-client-ruby'
           user-email: business.keynetra@gmail.com
           target-branch: main
 
@@ -385,7 +385,7 @@ jobs:
         with:
           source-directory: 'sdks/kotlin'
           destination-github-username: 'keynetra'
-          destination-repository-name: 'keynetra-kotlin'
+          destination-repository-name: 'keynetra-client-kotlin'
           user-email: business.keynetra@gmail.com
           target-branch: main
 
@@ -410,7 +410,7 @@ jobs:
         with:
           source-directory: 'sdks/swift'
           destination-github-username: 'keynetra'
-          destination-repository-name: 'keynetra-swift'
+          destination-repository-name: 'keynetra-client-swift'
           user-email: business.keynetra@gmail.com
           target-branch: main
 

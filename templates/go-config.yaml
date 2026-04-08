@@ -8,4 +8,4 @@ withGoMod: true
 packageDescription: "Official Go SDK for KeyNetra authorization platform."
 packageAuthor: "KeyNetra Engineering"
 packageEmail: "business.keynetra@gmail.com"
-packageUrl: "https://github.com/keynetra/keynetra-sdks"
+packageUrl: "https://github.com/keynetra/keynetra-client-go"

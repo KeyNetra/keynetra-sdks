@@ -10,7 +10,7 @@ developerName: KeyNetra Engineering
 developerEmail: business.keynetra@gmail.com
 developerOrganization: KeyNetra
 developerOrganizationUrl: https://keynetra.com
-scmConnection: scm:git:git://github.com/keynetra/keynetra-sdks.git
-scmDeveloperConnection: scm:git:ssh://github.com:keynetra/keynetra-sdks.git
-scmUrl: https://github.com/keynetra/keynetra-sdks
+scmConnection: scm:git:git://github.com/keynetra/keynetra-client-java.git
+scmDeveloperConnection: scm:git:ssh://github.com:keynetra/keynetra-client-java.git
+scmUrl: https://github.com/keynetra/keynetra-client-java
 artifactDescription: Official Java SDK for the KeyNetra authorization platform.

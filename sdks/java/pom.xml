@@ -9,9 +9,9 @@
     <url>https://github.com/openapitools/openapi-generator</url>
     <description>Official Java SDK for the KeyNetra authorization platform.</description>
     <scm>
-        <connection>scm:git:git://github.com/keynetra/keynetra-sdks.git</connection>
-        <developerConnection>scm:git:ssh://github.com:keynetra/keynetra-sdks.git</developerConnection>
-        <url>https://github.com/keynetra/keynetra-sdks</url>
+        <connection>scm:git:git://github.com/keynetra/keynetra-client-java.git</connection>
+        <developerConnection>scm:git:ssh://github.com:keynetra/keynetra-client-java.git</developerConnection>
+        <url>https://github.com/keynetra/keynetra-client-java</url>
     </scm>
 
     <licenses>

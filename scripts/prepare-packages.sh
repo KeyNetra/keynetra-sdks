@@ -3,7 +3,6 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SDK_VERSION="${SDK_VERSION:-0.1.0}"
-REPO_URL="${REPO_URL:-https://github.com/keynetra/keynetra-sdks}"
 
 # --- Colors & Emojis ---
 GREEN='\033[0;32m'
@@ -21,7 +20,9 @@ generate_readme() {
   local pkg_name="$2"
   local install_cmd="$3"
   local usage_example="$4"
-  local extra_info="${5:-}"
+  local repo_url="$5"
+  local docs_url="${6:-https://docs.keynetra.com}"
+  local extra_info="${7:-}"
   local lang_lower=$(echo "$lang_name" | tr '[:upper:]' '[:lower:]')
 
   cat <<EOF
@@ -29,6 +30,7 @@ generate_readme() {
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Version](https://img.shields.io/badge/version-${SDK_VERSION}-green.svg)]()
+[![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](${docs_url})
 
 Official ${lang_name} SDK for the [KeyNetra](https://keynetra.com) authorization platform. 🛡️
 
@@ -57,12 +59,12 @@ ${extra_info}
 
 ## 📚 Documentation
 
-For full API documentation, please visit the [KeyNetra Documentation Portal](https://docs.keynetra.com).
+For full API documentation, please visit the [KeyNetra Documentation Portal](${docs_url}).
 
 ## 🤝 Support
 
-- **Source**: [${REPO_URL}](${REPO_URL})
-- **Issues**: [GitHub Issues](${REPO_URL}/issues)
+- **Source**: [${repo_url}](${repo_url})
+- **Issues**: [GitHub Issues](${repo_url}/issues)
 - **License**: Apache-2.0
 
 EOF
@@ -71,6 +73,8 @@ EOF
 prepare_python() {
   log_step "Python"
   mkdir -p "${ROOT_DIR}/sdks/python/keynetra_client"
+  local repo_url="https://github.com/keynetra/keynetra-client-python"
+  local docs_url="https://docs.keynetra.com/sdks/python"
 
   generate_readme "Python" "keynetra-client" "pip install keynetra-client" "from keynetra_client import KeyNetraClient
 
@@ -84,7 +88,7 @@ decision = client.access.check_access(
     subject=\"user:123\",
     action=\"read\",
     resource=\"document:456\"
-)" > "${ROOT_DIR}/sdks/python/README.md"
+)" "${repo_url}" "${docs_url}" > "${ROOT_DIR}/sdks/python/README.md"
 
   cat > "${ROOT_DIR}/sdks/python/pyproject.toml" <<EOF
 [build-system]
@@ -102,9 +106,9 @@ authors = [{ name = "KeyNetra Engineering", email = "business.keynetra@gmail.com
 dependencies = ["urllib3>=2"]
 
 [project.urls]
-Homepage = "${REPO_URL}"
-Repository = "${REPO_URL}"
-Issues = "${REPO_URL}/issues"
+Homepage = "${repo_url}"
+Repository = "${repo_url}"
+Issues = "${repo_url}/issues"
 
 [tool.setuptools.packages.find]
 include = ["keynetra_client*"]
@@ -148,6 +152,8 @@ EOF
 prepare_typescript() {
   log_step "TypeScript"
   mkdir -p "${ROOT_DIR}/sdks/typescript/src"
+  local repo_url="https://github.com/keynetra/keynetra-client-typescript"
+  local docs_url="https://docs.keynetra.com/sdks/typescript"
 
   generate_readme "TypeScript" "@keynetra/client" "npm install @keynetra/client" "import { KeyNetraClient } from \"@keynetra/client\";
 
@@ -161,7 +167,7 @@ const decision = await client.access.checkAccess({
     subject: \"user:123\",
     action: \"read\",
     resource: \"document:456\"
-});" > "${ROOT_DIR}/sdks/typescript/README.md"
+});" "${repo_url}" "${docs_url}" > "${ROOT_DIR}/sdks/typescript/README.md"
 
   cat > "${ROOT_DIR}/sdks/typescript/package.json" <<EOF
 {
@@ -181,9 +187,9 @@ const decision = await client.access.checkAccess({
   "author": "KeyNetra Engineering <business.keynetra@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+${REPO_URL}.git"
+    "url": "git+${repo_url}.git"
   },
-  "homepage": "${REPO_URL}",
+  "homepage": "${repo_url}",
   "scripts": {
     "build": "tsc -p tsconfig.json"
   },
@@ -251,6 +257,8 @@ EOF
 
 prepare_go() {
   log_step "Go"
+  local repo_url="https://github.com/keynetra/keynetra-client-go"
+  local docs_url="https://docs.keynetra.com/sdks/go"
   generate_readme "Go" "keynetra-client-go" "go get github.com/keynetra/keynetra-client-go" "import \"github.com/keynetra/keynetra-client-go\"
 
 client := keynetra.NewKeyNetraClient(
@@ -264,7 +272,7 @@ decision, _, err := client.Access.CheckAccess(context.Background()).
         Subject: \"user:123\",
         Action: \"read\",
         Resource: \"document:456\",
-    }).Execute()" > "${ROOT_DIR}/sdks/go/README.md"
+    }).Execute()" "${repo_url}" "${docs_url}" > "${ROOT_DIR}/sdks/go/README.md"
 
   cat > "${ROOT_DIR}/sdks/go/keynetra_client.go" <<'EOF'
 package keynetra
@@ -302,6 +310,8 @@ EOF
 prepare_java() {
   log_step "Java"
   mkdir -p "${ROOT_DIR}/sdks/java/src/main/java/io/keynetra/client"
+  local repo_url="https://github.com/keynetra/keynetra-client-java"
+  local docs_url="https://docs.keynetra.com/sdks/java"
 
   generate_readme "Java" "keynetra-client" "<dependency>
   <groupId>io.keynetra</groupId>
@@ -321,7 +331,7 @@ var decision = client.getAccess().checkAccess(
         .subject(\"user:123\")
         .action(\"read\")
         .resource(\"document:456\")
-);" > "${ROOT_DIR}/sdks/java/README.md"
+);" "${repo_url}" "${docs_url}" > "${ROOT_DIR}/sdks/java/README.md"
 
   cat > "${ROOT_DIR}/sdks/java/src/main/java/io/keynetra/client/KeyNetraClient.java" <<'EOF'
 package io.keynetra.client;
@@ -364,6 +374,8 @@ EOF
 prepare_rust() {
   log_step "Rust"
   mkdir -p "${ROOT_DIR}/sdks/rust/src"
+  local repo_url="https://github.com/keynetra/keynetra-client-rust"
+  local docs_url="https://docs.keynetra.com/sdks/rust"
 
   generate_readme "Rust" "keynetra-client" "cargo add keynetra-client" "use keynetra_client::keynetra_client::KeyNetraClient;
 
@@ -375,7 +387,20 @@ let client = KeyNetraClient::new(
 // Perform an access check
 let decision = client.access()
     .check_access(...)
-    .await?;" > "${ROOT_DIR}/sdks/rust/README.md"
+    .await?;" "${repo_url}" "${docs_url}" > "${ROOT_DIR}/sdks/rust/README.md"
+
+  # Fix Cargo.toml metadata
+  if [ -f "${ROOT_DIR}/sdks/rust/Cargo.toml" ]; then
+    sed -i '' "s/description = .*/description = \"Official Rust SDK for the KeyNetra authorization platform.\"/" "${ROOT_DIR}/sdks/rust/Cargo.toml"
+    sed -i '' "s/license = .*/license = \"Apache-2.0\"/" "${ROOT_DIR}/sdks/rust/Cargo.toml"
+    sed -i '' "s/authors = .*/authors = [\"KeyNetra Engineering <business.keynetra@gmail.com>\"]/" "${ROOT_DIR}/sdks/rust/Cargo.toml"
+    # Add readme field if missing
+    if ! grep -q "readme =" "${ROOT_DIR}/sdks/rust/Cargo.toml"; then
+      sed -i '' "/\[package\]/a\\
+readme = \"README.md\"
+" "${ROOT_DIR}/sdks/rust/Cargo.toml"
+    fi
+  fi
 
   cat > "${ROOT_DIR}/sdks/rust/src/keynetra_client.rs" <<'EOF'
 use crate::apis::configuration::Configuration;
@@ -415,6 +440,8 @@ EOF
 prepare_csharp() {
   log_step "C#"
   mkdir -p "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client"
+  local repo_url="https://github.com/keynetra/keynetra-client-csharp"
+  local docs_url="https://docs.keynetra.com/sdks/csharp"
 
   generate_readme "C#" "KeyNetra.Client" "dotnet add package KeyNetra.Client" "using KeyNetra.Client;
 
@@ -428,7 +455,24 @@ var decision = await client.Access.CheckAccessAsync(new AccessRequest {
     Subject = \"user:123\",
     Action = \"read\",
     Resource = \"document:456\"
-});" > "${ROOT_DIR}/sdks/csharp/README.md"
+});" "${repo_url}" "${docs_url}" > "${ROOT_DIR}/sdks/csharp/README.md"
+  
+  # Copy README for NuGet packaging
+  cp "${ROOT_DIR}/sdks/csharp/README.md" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/README.md"
+
+  # Fix .csproj metadata
+  if [ -f "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj" ]; then
+    sed -i '' "s|<RepositoryUrl>.*</RepositoryUrl>|<RepositoryUrl>${repo_url}.git</RepositoryUrl>|" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+    if ! grep -q "<PackageReadmeFile>" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"; then
+      sed -i '' "/<\/PackageTags>/a\\
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+      # Also need to include the README file in the package
+      sed -i '' "/<\/ItemGroup>/i\\
+    <None Include=\"README.md\" Pack=\"true\" PackagePath=\"\\\\\"/>
+" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+    fi
+  fi
 
   cat > "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetraClient.cs" <<'EOF'
 namespace KeyNetra.Client;
@@ -468,6 +512,8 @@ EOF
 
 prepare_php() {
   log_step "PHP"
+  local repo_url="https://github.com/keynetra/keynetra-client-php"
+  local docs_url="https://docs.keynetra.com/sdks/php"
   generate_readme "PHP" "keynetra/client" "composer require keynetra/client" "use KeyNetra\Client\KeyNetraClient;
 
 \$client = new KeyNetraClient(
@@ -476,11 +522,13 @@ prepare_php() {
 );
 
 // Perform an access check
-\$decision = \$client->getAccessApi()->checkAccess(...);" > "${ROOT_DIR}/sdks/php/README.md"
+\$decision = \$client->getAccessApi()->checkAccess(...);" "${repo_url}" "${docs_url}" > "${ROOT_DIR}/sdks/php/README.md"
 }
 
 prepare_ruby() {
   log_step "Ruby"
+  local repo_url="https://github.com/keynetra/keynetra-client-ruby"
+  local docs_url="https://docs.keynetra.com/sdks/ruby"
   generate_readme "Ruby" "keynetra-client" "gem install keynetra-client" "require 'keynetra-client'
 
 client = KeyNetra::KeyNetraClient.new(
@@ -489,11 +537,18 @@ client = KeyNetra::KeyNetraClient.new(
 )
 
 # Perform an access check
-decision = client.access_api.check_access(...)" > "${ROOT_DIR}/sdks/ruby/README.md"
+decision = client.access_api.check_access(...)" "${repo_url}" "${docs_url}" > "${ROOT_DIR}/sdks/ruby/README.md"
+
+  # Fix .gemspec metadata
+  if [ -f "${ROOT_DIR}/sdks/ruby/keynetra-client.gemspec" ]; then
+    sed -i '' "s/s.summary     = .*/s.summary     = \"Official Ruby SDK for the KeyNetra authorization platform.\"/" "${ROOT_DIR}/sdks/ruby/keynetra-client.gemspec"
+  fi
 }
 
 prepare_kotlin() {
   log_step "Kotlin"
+  local repo_url="https://github.com/keynetra/keynetra-client-kotlin"
+  local docs_url="https://docs.keynetra.com/sdks/kotlin"
   generate_readme "Kotlin" "keynetra-client-kotlin" "implementation(\"io.keynetra:keynetra-client-kotlin:${SDK_VERSION}\")" "import io.keynetra.client.KeyNetraClient
 
 val client = KeyNetraClient(
@@ -502,13 +557,15 @@ val client = KeyNetraClient(
 )
 
 // Perform an access check
-val decision = client.accessApi.checkAccess(...)" > "${ROOT_DIR}/sdks/kotlin/README.md"
+val decision = client.accessApi.checkAccess(...)" "${repo_url}" "${docs_url}" > "${ROOT_DIR}/sdks/kotlin/README.md"
 }
 
 prepare_swift() {
   log_step "Swift"
+  local repo_url="https://github.com/keynetra/keynetra-client-swift"
+  local docs_url="https://docs.keynetra.com/sdks/swift"
   generate_readme "Swift" "KeyNetraClient" "dependencies: [
-    .package(url: \"${REPO_URL}.git\", from: \"${SDK_VERSION}\")
+    .package(url: \"${repo_url}.git\", from: \"${SDK_VERSION}\")
 ]" "import KeyNetraClient
 
 let client = KeyNetraClient(
@@ -517,7 +574,7 @@ let client = KeyNetraClient(
 )
 
 // Perform an access check
-client.accessApi.checkAccess(...)" > "${ROOT_DIR}/sdks/swift/README.md"
+client.accessApi.checkAccess(...)" "${repo_url}" "${docs_url}" > "${ROOT_DIR}/sdks/swift/README.md"
 }
 
 prepare_python

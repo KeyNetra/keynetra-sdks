@@ -8,5 +8,5 @@ enumNameSuffix: Enum
 packageDescription: Official TypeScript SDK for the KeyNetra authorization platform.
 authorName: KeyNetra Engineering
 authorEmail: business.keynetra@gmail.com
-packageRepository: https://github.com/keynetra/keynetra-sdks
+packageRepository: https://github.com/keynetra/keynetra-client-typescript
 packageLicense: Apache-2.0

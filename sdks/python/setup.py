@@ -34,7 +34,7 @@ setup(
     description="KeyNetra",
     author="OpenAPI Generator community",
     author_email="team@openapitools.org",
-    url="https://github.com/keynetra/keynetra-sdks",
+    url="https://github.com/keynetra/keynetra-client-python",
     keywords=["OpenAPI", "OpenAPI-Generator", "KeyNetra"],
     install_requires=REQUIRES,
     packages=find_packages(exclude=["test", "tests"]),

@@ -2,6 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Version](https://img.shields.io/badge/version-0.1.0-green.svg)]()
+[![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://docs.keynetra.com/sdks/swift)
 
 Official Swift SDK for the [KeyNetra](https://keynetra.com) authorization platform. 🛡️
 
@@ -18,7 +19,7 @@ KeyNetra provides high-performance, distributed authorization as a service. This
 
 ```bash
 dependencies: [
-    .package(url: "https://github.com/keynetra/keynetra-sdks.git", from: "0.1.0")
+    .package(url: "https://github.com/keynetra/keynetra-client-swift.git", from: "0.1.0")
 ]
 ```
 
@@ -40,11 +41,11 @@ client.accessApi.checkAccess(...)
 
 ## 📚 Documentation
 
-For full API documentation, please visit the [KeyNetra Documentation Portal](https://docs.keynetra.com).
+For full API documentation, please visit the [KeyNetra Documentation Portal](https://docs.keynetra.com/sdks/swift).
 
 ## 🤝 Support
 
-- **Source**: [https://github.com/keynetra/keynetra-sdks](https://github.com/keynetra/keynetra-sdks)
-- **Issues**: [GitHub Issues](https://github.com/keynetra/keynetra-sdks/issues)
+- **Source**: [https://github.com/keynetra/keynetra-client-swift](https://github.com/keynetra/keynetra-client-swift)
+- **Issues**: [GitHub Issues](https://github.com/keynetra/keynetra-client-swift/issues)
 - **License**: Apache-2.0
 

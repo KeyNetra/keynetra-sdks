@@ -7,5 +7,5 @@ nullableReferenceTypes: true
 optionalProjectFile: false
 packageTags: "keynetra;authorization;authz;permissions;sdk"
 packageDescription: "Official C# SDK for the KeyNetra authorization platform. KeyNetra provides high-performance, distributed authorization as a service."
-packageProjectUrl: "https://github.com/keynetra/keynetra-sdks"
+packageProjectUrl: "https://github.com/keynetra/keynetra-client-csharp"
 packageLicenseExpression: "Apache-2.0"

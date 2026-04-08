@@ -5,5 +5,5 @@ hideGenerationTimestamp: true
 gemAuthor: KeyNetra Engineering
 gemAuthorEmail: business.keynetra@gmail.com
 gemDescription: Official Ruby SDK for the KeyNetra authorization platform.
-gemHomepage: https://github.com/keynetra/keynetra-sdks
+gemHomepage: https://github.com/keynetra/keynetra-client-ruby
 gemLicense: Apache-2.0

@@ -13,9 +13,9 @@ authors = [{ name = "KeyNetra Engineering", email = "business.keynetra@gmail.com
 dependencies = ["urllib3>=2"]
 
 [project.urls]
-Homepage = "https://github.com/keynetra/keynetra-sdks"
-Repository = "https://github.com/keynetra/keynetra-sdks"
-Issues = "https://github.com/keynetra/keynetra-sdks/issues"
+Homepage = "https://github.com/keynetra/keynetra-client-python"
+Repository = "https://github.com/keynetra/keynetra-client-python"
+Issues = "https://github.com/keynetra/keynetra-client-python/issues"
 
 [tool.setuptools.packages.find]
 include = ["keynetra_client*"]

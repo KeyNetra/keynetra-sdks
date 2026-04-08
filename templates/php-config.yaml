@@ -8,5 +8,6 @@ developerName: KeyNetra Engineering
 developerEmail: business.keynetra@gmail.com
 developerOrganization: KeyNetra
 developerOrganizationUrl: https://keynetra.com
+packageUrl: https://github.com/keynetra/keynetra-client-php
 artifactDescription: Official PHP SDK for the KeyNetra authorization platform.
 licenseName: Apache-2.0

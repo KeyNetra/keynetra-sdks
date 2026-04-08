@@ -21,8 +21,8 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["KeyNetra Engineering"]
   s.email       = ["business.keynetra@gmail.com"]
-  s.homepage    = "https://github.com/keynetra/keynetra-sdks"
-  s.summary     = "KeyNetra Ruby Gem"
+  s.homepage    = "https://github.com/keynetra/keynetra-client-ruby"
+  s.summary     = "Official Ruby SDK for the KeyNetra authorization platform."
   s.description = "Official Ruby SDK for the KeyNetra authorization platform."
   s.license     = "Apache-2.0"
   s.required_ruby_version = ">= 2.7"

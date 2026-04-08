@@ -1,3 +1,5 @@
+# SDKs
+sdks/
 # IDEs
 .vscode/
 .idea/
@@ -119,4 +121,3 @@ tmp/
 logs/
 *.bak
 *.tmp
-sdks/*

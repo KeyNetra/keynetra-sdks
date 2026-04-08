@@ -6,5 +6,5 @@ hideGenerationTimestamp: true
 packageAuthors: "KeyNetra Engineering <business.keynetra@gmail.com>"
 packageDescription: "Official Rust SDK for the KeyNetra authorization platform."
 packageHomepage: "https://keynetra.com"
-packageRepository: "https://github.com/keynetra/keynetra-sdks"
+packageRepository: "https://github.com/keynetra/keynetra-client-rust"
 packageLicense: "Apache-2.0"

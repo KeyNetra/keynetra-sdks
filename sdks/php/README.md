@@ -2,6 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Version](https://img.shields.io/badge/version-0.1.0-green.svg)]()
+[![Documentation](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://docs.keynetra.com/sdks/php)
 
 Official PHP SDK for the [KeyNetra](https://keynetra.com) authorization platform. 🛡️
 
@@ -38,11 +39,11 @@ $decision = $client->getAccessApi()->checkAccess(...);
 
 ## 📚 Documentation
 
-For full API documentation, please visit the [KeyNetra Documentation Portal](https://docs.keynetra.com).
+For full API documentation, please visit the [KeyNetra Documentation Portal](https://docs.keynetra.com/sdks/php).
 
 ## 🤝 Support
 
-- **Source**: [https://github.com/keynetra/keynetra-sdks](https://github.com/keynetra/keynetra-sdks)
-- **Issues**: [GitHub Issues](https://github.com/keynetra/keynetra-sdks/issues)
+- **Source**: [https://github.com/keynetra/keynetra-client-php](https://github.com/keynetra/keynetra-client-php)
+- **Issues**: [GitHub Issues](https://github.com/keynetra/keynetra-client-php/issues)
 - **License**: Apache-2.0
 

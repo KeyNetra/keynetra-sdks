@@ -9,4 +9,7 @@ developerName: KeyNetra Engineering
 developerEmail: business.keynetra@gmail.com
 developerOrganization: KeyNetra
 developerOrganizationUrl: https://keynetra.com
+scmConnection: scm:git:git://github.com/keynetra/keynetra-client-kotlin.git
+scmDeveloperConnection: scm:git:ssh://github.com:keynetra/keynetra-client-kotlin.git
+scmUrl: https://github.com/keynetra/keynetra-client-kotlin
 artifactDescription: Official Kotlin Multiplatform SDK for the KeyNetra authorization platform.

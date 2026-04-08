@@ -20,8 +20,8 @@ KeyNetra is a high-performance, distributed authorization as a service. This rep
 | **C#** | `KeyNetra.Client` | `dotnet add package KeyNetra.Client` |
 | **PHP** | `keynetra/client` | `composer require keynetra/client` |
 | **Ruby** | `keynetra-client` | `gem install keynetra-client` |
-| **Kotlin** | `keynetra-client-kotlin` | `implementation("io.keynetra...")` |
-| **Swift** | `KeyNetraClient` | `.package(url: "...", from: "...")` |
+| **Kotlin** | `keynetra-client-kotlin` | `implementation("io.keynetra:keynetra-client-kotlin:0.1.0")` |
+| **Swift** | `KeyNetraClient` | `.package(url: "https://github.com/keynetra/keynetra-client-swift.git", from: "0.1.0")` |
 
 ## ✨ Key Features
 
