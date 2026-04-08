@@ -185,6 +185,145 @@ generate_sdk_ruby() {
   fi
 }
 
+generate_sdk_typescript() {
+  local generator="typescript-fetch"
+  local output_dir="${ROOT_DIR}/sdks/typescript"
+  local config_file="${ROOT_DIR}/templates/typescript-config.yaml"
+  local name="TypeScript"
+  local log_file="${ROOT_DIR}/sdks/gen-TypeScript.log"
+
+  log_step "Generating ${name} SDK..."
+  rm -rf "${output_dir}"
+  mkdir -p "${output_dir}"
+
+  if openapi-generator-cli generate \
+    -i "${SPEC_FILE}" \
+    -g "${generator}" \
+    -o "${output_dir}" \
+    -c "${config_file}" \
+    --type-mappings=null=any \
+    --skip-validate-spec > "${log_file}" 2>&1; then
+    log_success "${name} SDK generated successfully."
+    rm -f "${log_file}"
+  else
+    log_error "Failed to generate ${name} SDK. See details below:"
+    cat "${log_file}"
+    rm -f "${log_file}"
+    return 1
+  fi
+}
+
+generate_sdk_rust() {
+  local generator="rust"
+  local output_dir="${ROOT_DIR}/sdks/rust"
+  local config_file="${ROOT_DIR}/templates/rust-config.yaml"
+  local name="Rust"
+  local log_file="${ROOT_DIR}/sdks/gen-Rust.log"
+
+  log_step "Generating ${name} SDK..."
+  rm -rf "${output_dir}"
+  mkdir -p "${output_dir}"
+
+  if openapi-generator-cli generate \
+    -i "${SPEC_FILE}" \
+    -g "${generator}" \
+    -o "${output_dir}" \
+    -c "${config_file}" \
+    --skip-validate-spec > "${log_file}" 2>&1; then
+    log_success "${name} SDK generated successfully."
+    rm -f "${log_file}"
+  else
+    log_error "Failed to generate ${name} SDK. See details below:"
+    cat "${log_file}"
+    rm -f "${log_file}"
+    return 1
+  fi
+}
+
+generate_sdk_java() {
+  local generator="java"
+  local output_dir="${ROOT_DIR}/sdks/java"
+  local config_file="${ROOT_DIR}/templates/java-config.yaml"
+  local name="Java"
+  local log_file="${ROOT_DIR}/sdks/gen-Java.log"
+
+  log_step "Generating ${name} SDK..."
+  rm -rf "${output_dir}"
+  mkdir -p "${output_dir}"
+
+  if openapi-generator-cli generate \
+    -i "${SPEC_FILE}" \
+    -g "${generator}" \
+    -o "${output_dir}" \
+    -c "${config_file}" \
+    --type-mappings=null=Object \
+    --skip-validate-spec > "${log_file}" 2>&1; then
+    log_success "${name} SDK generated successfully."
+    rm -f "${log_file}"
+  else
+    log_error "Failed to generate ${name} SDK. See details below:"
+    cat "${log_file}"
+    rm -f "${log_file}"
+    return 1
+  fi
+}
+
+generate_sdk_csharp() {
+  local generator="csharp"
+  local output_dir="${ROOT_DIR}/sdks/csharp"
+  local config_file="${ROOT_DIR}/templates/csharp-config.yaml"
+  local name="C#"
+  local log_file="${ROOT_DIR}/sdks/gen-CSharp.log"
+
+  log_step "Generating ${name} SDK..."
+  rm -rf "${output_dir}"
+  mkdir -p "${output_dir}"
+
+  if openapi-generator-cli generate \
+    -i "${SPEC_FILE}" \
+    -g "${generator}" \
+    -o "${output_dir}" \
+    -c "${config_file}" \
+    --type-mappings=null=object \
+    --skip-validate-spec > "${log_file}" 2>&1; then
+    log_success "${name} SDK generated successfully."
+    rm -f "${log_file}"
+  else
+    log_error "Failed to generate ${name} SDK. See details below:"
+    cat "${log_file}"
+    rm -f "${log_file}"
+    return 1
+  fi
+}
+
+generate_sdk_php() {
+  local generator="php"
+  local output_dir="${ROOT_DIR}/sdks/php"
+  local config_file="${ROOT_DIR}/templates/php-config.yaml"
+  local name="PHP"
+  local log_file="${ROOT_DIR}/sdks/gen-PHP.log"
+
+  log_step "Generating ${name} SDK..."
+  rm -rf "${output_dir}"
+  mkdir -p "${output_dir}"
+
+  if openapi-generator-cli generate \
+    -i "${SPEC_FILE}" \
+    -g "${generator}" \
+    -o "${output_dir}" \
+    -c "${config_file}" \
+    --type-mappings=null=mixed \
+    --skip-validate-spec > "${log_file}" 2>&1; then
+    log_success "${name} SDK generated successfully."
+    rm -f "${log_file}"
+  else
+    log_error "Failed to generate ${name} SDK. See details below:"
+    cat "${log_file}"
+    rm -f "${log_file}"
+    return 1
+  fi
+}
+
 # --- Execution ---
 echo -e "${YELLOW}${ROCKET}  Starting KeyNetra SDK Generation v${SDK_VERSION}${NC}"
 
@@ -196,12 +335,12 @@ log_info "Generating SDKs in parallel..."
 FAIL=0
 
 (generate_sdk_python) || FAIL=1 &
-(generate_sdk typescript-fetch "${ROOT_DIR}/sdks/typescript" "${ROOT_DIR}/templates/typescript-config.yaml" "TypeScript") || FAIL=1 &
+(generate_sdk_typescript) || FAIL=1 &
 (generate_sdk_go) || FAIL=1 &
-(generate_sdk java "${ROOT_DIR}/sdks/java" "${ROOT_DIR}/templates/java-config.yaml" "Java") || FAIL=1 &
-(generate_sdk rust "${ROOT_DIR}/sdks/rust" "${ROOT_DIR}/templates/rust-config.yaml" "Rust") || FAIL=1 &
-(generate_sdk csharp "${ROOT_DIR}/sdks/csharp" "${ROOT_DIR}/templates/csharp-config.yaml" "C#") || FAIL=1 &
-(generate_sdk php "${ROOT_DIR}/sdks/php" "${ROOT_DIR}/templates/php-config.yaml" "PHP") || FAIL=1 &
+(generate_sdk_java) || FAIL=1 &
+(generate_sdk_rust) || FAIL=1 &
+(generate_sdk_csharp) || FAIL=1 &
+(generate_sdk_php) || FAIL=1 &
 (generate_sdk_ruby) || FAIL=1 &
 (generate_sdk_kotlin) || FAIL=1 &
 (generate_sdk swift6 "${ROOT_DIR}/sdks/swift" "${ROOT_DIR}/templates/swift-config.yaml" "Swift") || FAIL=1 &

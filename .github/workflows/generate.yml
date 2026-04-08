@@ -94,4 +94,10 @@ jobs:
         run: |
           cd tests/python
           pip install pydantic urllib3 python-dateutil typing-extensions
-          python3 test_instantiation.py
+          echo "🧪 Running Python SDK Instantiation Test..."
+          if python3 test_instantiation.py; then
+            echo "✅ Python SDK Instantiation Test Passed!"
+          else
+            echo "❌ Python SDK Instantiation Test Failed!"
+            exit 1
+          fi

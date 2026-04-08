@@ -1,14 +1,16 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ES2022",
-    "moduleResolution": "Bundler",
     "declaration": true,
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
     "outDir": "dist",
-    "rootDir": "src",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true
+    "typeRoots": [
+      "node_modules/@types"
+    ]
   },
-  "include": ["src/**/*.ts"]
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
 }
