@@ -61,6 +61,7 @@ generate_sdk() {
     -g "${generator}" \
     -o "${output_dir}" \
     -c "${config_file}" \
+    --type-mappings=null=Any \
     --skip-validate-spec > "${log_file}" 2>&1; then
     log_success "${name} SDK generated successfully."
     rm -f "${log_file}"
