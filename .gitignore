@@ -119,3 +119,4 @@ tmp/
 logs/
 *.bak
 *.tmp
+sdks/*
