@@ -37,12 +37,16 @@ require_cmd() {
 install_generator() {
   if command -v openapi-generator-cli >/dev/null 2>&1; then
     log_info "OpenAPI Generator already installed."
+    # Ensure a version is selected and downloaded to avoid parallel download race conditions
+    openapi-generator-cli version >/dev/null 2>&1
     return
   fi
 
   log_step "Installing OpenAPI Generator..."
   require_cmd npm
   npm install -g @openapitools/openapi-generator-cli
+  # Pre-download the jar to avoid parallel race conditions
+  openapi-generator-cli version >/dev/null 2>&1
 }
 
 generate_sdk() {
