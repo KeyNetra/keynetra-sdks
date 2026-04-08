@@ -384,7 +384,7 @@ FAIL=0
 (generate_sdk_csharp) || FAIL=1 &
 (generate_sdk_php) || FAIL=1 &
 (generate_sdk_ruby) || FAIL=1 &
-(generate_sdk_kotlin) || FAIL=1 &
+# (generate_sdk_kotlin) || FAIL=1 &
 (generate_sdk_swift) || FAIL=1 &
 
 # Wait for all background jobs to finish

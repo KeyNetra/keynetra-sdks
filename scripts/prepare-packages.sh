@@ -634,7 +634,7 @@ prepare_rust
 prepare_csharp
 prepare_php
 prepare_ruby
-prepare_kotlin
+# prepare_kotlin
 prepare_swift
 
 log_success "Prepared SDK package metadata and unified KeyNetraClient wrappers."
