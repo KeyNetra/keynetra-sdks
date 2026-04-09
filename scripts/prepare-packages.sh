@@ -472,35 +472,80 @@ var decision = await client.Access.CheckAccessAsync(new AccessRequest {
     Action = \"read\",
     Resource = \"document:456\"
 });" "${repo_url}" "${docs_url}" > "${ROOT_DIR}/sdks/csharp/README.md"
+
+  perl -0i -pe 's@\[\!\[Version\]\(([^)]+)\)\]\(\)@[![Version]($1)]('"${repo_url}"'/releases)@g' "${ROOT_DIR}/sdks/csharp/README.md"
   
   # Copy README for NuGet packaging
   cp "${ROOT_DIR}/sdks/csharp/README.md" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/README.md"
 
-  # Fix .csproj metadata
-  if [ -f "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj" ]; then
-    perl -i -pe "s|<RepositoryUrl>.*</RepositoryUrl>|<RepositoryUrl>${repo_url}.git</RepositoryUrl>|g" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
-    if grep -q "<Company>" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"; then
-      perl -i -pe "s|<Company>.*</Company>|<Company>KeyNetra</Company>|g" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
-    fi
-    perl -i -pe "s|<Authors>.*</Authors>|<Authors>KeyNetra</Authors>|g" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
-    if grep -q "<PackageProjectUrl>" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"; then
-      perl -i -pe "s|<PackageProjectUrl>.*</PackageProjectUrl>|<PackageProjectUrl>${repo_url}</PackageProjectUrl>|g" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+  # ---------------------------------------------------------
+# Fix .csproj metadata (NuGet-safe)
+# ---------------------------------------------------------
+
+CSHARP_PROJ="${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+
+if [ -f "$CSHARP_PROJ" ]; then
+
+  echo "Fixing CSharp package metadata..."
+
+  # Repository URL (must NOT contain .git)
+  if grep -q "<RepositoryUrl>" "$CSHARP_PROJ"; then
+    perl -i -pe "s|<RepositoryUrl>.*</RepositoryUrl>|<RepositoryUrl>${repo_url}</RepositoryUrl>|g" "$CSHARP_PROJ"
+  else
+    REPO_URL="${repo_url}" perl -i -pe 's|(<PropertyGroup>)|$1\n    <RepositoryUrl>'"$REPO_URL"'</RepositoryUrl>|' "$CSHARP_PROJ"
+  fi
+
+  # Company
+  if grep -q "<Company>" "$CSHARP_PROJ"; then
+    perl -i -pe "s|<Company>.*</Company>|<Company>KeyNetra</Company>|g" "$CSHARP_PROJ"
+  else
+    perl -i -pe 's|(<PropertyGroup>)|$1\n    <Company>KeyNetra</Company>|' "$CSHARP_PROJ"
+  fi
+
+  # Authors
+  if grep -q "<Authors>" "$CSHARP_PROJ"; then
+    perl -i -pe "s|<Authors>.*</Authors>|<Authors>KeyNetra</Authors>|g" "$CSHARP_PROJ"
+  else
+    perl -i -pe 's|(<PropertyGroup>)|$1\n    <Authors>KeyNetra</Authors>|' "$CSHARP_PROJ"
+  fi
+
+  # Package Project URL
+  if grep -q "<PackageProjectUrl>" "$CSHARP_PROJ"; then
+    perl -i -pe "s|<PackageProjectUrl>.*</PackageProjectUrl>|<PackageProjectUrl>${repo_url}</PackageProjectUrl>|g" "$CSHARP_PROJ"
+  else
+    REPO_URL="${repo_url}" perl -i -pe 's|(<RepositoryUrl>.*</RepositoryUrl>)|$1\n    <PackageProjectUrl>'"$REPO_URL"'</PackageProjectUrl>|' "$CSHARP_PROJ"
+  fi
+
+  # License
+  if grep -q "<PackageLicenseExpression>" "$CSHARP_PROJ"; then
+    perl -i -pe 's|<PackageLicenseExpression>.*</PackageLicenseExpression>|<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>|g' "$CSHARP_PROJ"
+  else
+    perl -i -pe 's|(<PackageProjectUrl>.*</PackageProjectUrl>)|$1\n    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>|' "$CSHARP_PROJ"
+  fi
+
+  # ---------------------------------------------------------
+  # README metadata
+  # ---------------------------------------------------------
+
+  if ! grep -q "<PackageReadmeFile>" "$CSHARP_PROJ"; then
+    if grep -q "<PackageTags>" "$CSHARP_PROJ"; then
+      perl -i -pe 's/(<\/PackageTags>)/$1\n    <PackageReadmeFile>README.md<\/PackageReadmeFile>/' "$CSHARP_PROJ"
     else
-      REPO_URL="${repo_url}" perl -i -pe 's|(<RepositoryType>.*</RepositoryType>)|$1\n    <PackageProjectUrl>$ENV{REPO_URL}</PackageProjectUrl>|g' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
-    fi
-    if grep -q "<PackageLicenseExpression>" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"; then
-      perl -i -pe 's|<PackageLicenseExpression>.*</PackageLicenseExpression>|<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>|g' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
-    else
-      perl -i -pe 's/(<\/PackageProjectUrl>)/$1\n    <PackageLicenseExpression>Apache-2.0<\/PackageLicenseExpression>/g' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
-    fi
-    if ! grep -q "<PackageReadmeFile>" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"; then
-      perl -i -pe 's/(<\/PackageTags>)/$1\n    <PackageReadmeFile>README.md<\/PackageReadmeFile>/g' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
-    fi
-    perl -0i -pe 's@\n\s*<None Include="README\.md" Pack="true" PackagePath="\\\\"/>\s*@@g' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
-    if ! grep -q '<None Include="README.md" Pack="true" PackagePath="\\\\"/>' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"; then
-      perl -0i -pe 's@</Project>@  <ItemGroup>\n    <None Include="README.md" Pack="true" PackagePath="\\\\"/>\n  </ItemGroup>\n</Project>@' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+      perl -i -pe 's/(<\/PropertyGroup>)/    <PackageReadmeFile>README.md<\/PackageReadmeFile>\n$1/' "$CSHARP_PROJ"
     fi
   fi
+
+  # Remove duplicate README entries
+  perl -0i -pe 's@\n\s*<None Include="README\.md" Pack="true" PackagePath="\\\\"/>\s*@@g' "$CSHARP_PROJ"
+
+  # Ensure README packaged in NuGet
+  if ! grep -q '<None Include="README.md" Pack="true" PackagePath="\\\\"/>' "$CSHARP_PROJ"; then
+    perl -0i -pe 's@</Project>@  <ItemGroup>\n    <None Include="README.md" Pack="true" PackagePath="\\\\"/>\n  </ItemGroup>\n</Project>@' "$CSHARP_PROJ"
+  fi
+
+  echo "CSharp .csproj metadata fixed."
+
+fi
 
   cat > "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetraClient.cs" <<'EOF'
 namespace KeyNetra.Client;
@@ -508,6 +553,9 @@ namespace KeyNetra.Client;
 using KeyNetra.Client.Api;
 using KeyNetra.Client.Client;
 
+/// <summary>
+/// Unified entry point for the KeyNetra C# SDK.
+/// </summary>
 public sealed class KeyNetraClient
 {
     /// <summary>
