@@ -336,6 +336,49 @@ jobs:
       - name: Verify Rust
         run: cargo search keynetra-client || true
 
+
+  create-repos:
+    name: 📁 Create SDK Repositories
+    needs: [prepare, smoke-test]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: sdks
+          path: sdks
+
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install gh -y
+
+      - name: Authenticate GH
+        run: gh auth setup-git
+        env:
+          GH_TOKEN: ${{ secrets.SDK_MIRROR_TOKEN }}
+
+      - name: Create and Push Repos
+        run: |
+          LANGS="python typescript go rust csharp java php ruby swift"
+
+          for LANG in $LANGS; do
+            REPO="keynetra-client-$LANG"
+
+            echo "Creating repo $REPO"
+
+            gh repo create keynetra/$REPO \
+              --public \
+              --source=sdks/$LANG \
+              --push \
+              --description "Official KeyNetra $LANG SDK" \
+              || echo "Repo exists"
+          done
+        env:
+          GH_TOKEN: ${{ secrets.SDK_MIRROR_TOKEN }}
+
 # ------------------------------------------------------------
 # SUMMARY
 # ------------------------------------------------------------
