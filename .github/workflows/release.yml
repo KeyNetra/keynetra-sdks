@@ -52,7 +52,6 @@ jobs:
           SDK_VERSION: ${{ steps.version.outputs.version }}
         run: |
           chmod +x scripts/generate-all.sh scripts/prepare-packages.sh
-          ./scripts/prepare-packages.sh
           ./scripts/generate-all.sh
 
       - name: Upload SDK artifacts
@@ -398,9 +397,17 @@ jobs:
 
           for LANG in $LANGS; do
             REPO="keynetra-client-$LANG"
-            DIR="sdks/$LANG"
 
-            echo "Processing $REPO"
+            if [ -d "sdks/$LANG" ]; then
+              DIR="sdks/$LANG"
+            elif [ -d "sdks/sdks/$LANG" ]; then
+              DIR="sdks/sdks/$LANG"
+            else
+              echo "Missing SDK directory for $LANG"
+              exit 1
+            fi
+
+            echo "Processing $REPO from $DIR"
 
             # Create repo if missing
             gh repo create keynetra/$REPO \
@@ -417,7 +424,7 @@ jobs:
             fi
 
             git add .
-            git commit -m "Initial KeyNetra $LANG SDK release" || echo "Nothing to commit"
+            git commit -m "KeyNetra $LANG SDK release ${{ github.ref }} ${{ github.sha }}" || echo "Nothing to commit"
 
             git remote remove origin 2>/dev/null || true
             git remote add origin https://x-access-token:${GH_TOKEN}@github.com/keynetra/$REPO.git
