@@ -102,7 +102,7 @@ description = "Official Python Client SDK for the KeyNetra authorization platfor
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "Apache-2.0" }
-authors = [{ name = "Sainath.Sapa", email = "info.djsai\@gmail.com" }]
+authors = [{ name = "Sainath.Sapa", email = "info.djsai@gmail.com" }]
 dependencies = [
     "urllib3>=2.1.0",
     "python-dateutil>=2.8.2",
