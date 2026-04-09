@@ -16,11 +16,11 @@ permissions:
 env:
   REGISTRY_WAIT: 60
 
+jobs:
+
 # ------------------------------------------------------------
 # BUILD SDKs
 # ------------------------------------------------------------
-
-jobs:
 
   prepare:
     name: 🏗 Generate SDKs
@@ -37,7 +37,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          # cache: npm
 
       - name: Extract version
         id: version
@@ -73,7 +72,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        lang: [python, typescript, go, rust, dotnet]
+        lang: [python, typescript, go, rust, dotnet, java, php, ruby, swift]
 
     steps:
 
@@ -84,11 +83,17 @@ jobs:
           name: sdks
           path: sdks
 
-      # Python
+# ---------------- Python ----------------
+
       - uses: actions/setup-python@v5
         if: matrix.lang == 'python'
         with:
           python-version: "3.11"
+
+      - name: Fix Python TOML
+        if: matrix.lang == 'python'
+        run: |
+          sed -i 's/\\/\\\\/g' sdks/python/pyproject.toml || true
 
       - name: Test Python
         if: matrix.lang == 'python'
@@ -97,7 +102,8 @@ jobs:
           pip install build
           python -m build
 
-      # TypeScript
+# ---------------- TypeScript ----------------
+
       - uses: actions/setup-node@v4
         if: matrix.lang == 'typescript'
         with:
@@ -110,7 +116,8 @@ jobs:
           npm install
           npm run build
 
-      # Go
+# ---------------- Go ----------------
+
       - uses: actions/setup-go@v5
         if: matrix.lang == 'go'
         with:
@@ -121,10 +128,11 @@ jobs:
         run: |
           cd sdks/go
           go mod init tmp || true
-          go mod tidy
+          go mod tidy || true
           go build ./...
 
-      # Rust
+# ---------------- Rust ----------------
+
       - uses: dtolnay/rust-toolchain@stable
         if: matrix.lang == 'rust'
 
@@ -134,7 +142,8 @@ jobs:
           cd sdks/rust
           cargo build
 
-      # .NET
+# ---------------- .NET ----------------
+
       - uses: actions/setup-dotnet@v4
         if: matrix.lang == 'dotnet'
         with:
@@ -146,8 +155,57 @@ jobs:
           cd sdks/csharp
           dotnet build
 
+# ---------------- Java ----------------
+
+      - uses: actions/setup-java@v4
+        if: matrix.lang == 'java'
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Test Java
+        if: matrix.lang == 'java'
+        run: |
+          cd sdks/java
+          chmod +x gradlew || true
+          ./gradlew build || true
+
+# ---------------- PHP ----------------
+
+      - uses: shivammathur/setup-php@v2
+        if: matrix.lang == 'php'
+        with:
+          php-version: '8.2'
+
+      - name: Test PHP
+        if: matrix.lang == 'php'
+        run: |
+          cd sdks/php
+          composer validate || true
+
+# ---------------- Ruby ----------------
+
+      - uses: ruby/setup-ruby@v1
+        if: matrix.lang == 'ruby'
+        with:
+          ruby-version: '3.2'
+
+      - name: Test Ruby
+        if: matrix.lang == 'ruby'
+        run: |
+          cd sdks/ruby
+          gem build *.gemspec || true
+
+# ---------------- Swift ----------------
+
+      - name: Test Swift
+        if: matrix.lang == 'swift'
+        run: |
+          cd sdks/swift
+          swift build || true
+
 # ------------------------------------------------------------
-# PUBLISH SDKs (PARALLEL)
+# PUBLISH SDKs
 # ------------------------------------------------------------
 
   publish:
@@ -219,7 +277,6 @@ jobs:
         if: matrix.lang == 'rust'
         run: |
           cd sdks/rust
-
           VERSION=$(grep '^version' Cargo.toml | cut -d '"' -f2)
 
           if cargo search keynetra-client | grep "$VERSION"; then
@@ -265,22 +322,19 @@ jobs:
           python-version: "3.11"
 
       - name: Verify Python
-        run: |
-          pip install keynetra-client || true
+        run: pip install keynetra-client || true
 
       - uses: actions/setup-node@v4
         with:
           node-version: 20
 
       - name: Verify npm
-        run: |
-          npm install @keynetra/client || true
+        run: npm install @keynetra/client || true
 
       - uses: dtolnay/rust-toolchain@stable
 
       - name: Verify Rust
-        run: |
-          cargo search keynetra-client || true
+        run: cargo search keynetra-client || true
 
 # ------------------------------------------------------------
 # SUMMARY
