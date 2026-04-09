@@ -51,7 +51,8 @@ jobs:
         env:
           SDK_VERSION: ${{ steps.version.outputs.version }}
         run: |
-          chmod +x scripts/generate-all.sh
+          chmod +x scripts/generate-all.sh scripts/prepare-packages.sh
+          ./scripts/prepare-packages.sh
           ./scripts/generate-all.sh
 
       - name: Upload SDK artifacts
