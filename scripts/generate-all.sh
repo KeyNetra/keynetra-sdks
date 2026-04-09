@@ -298,6 +298,7 @@ generate_sdk_csharp() {
     -g "${generator}" \
     -o "${output_dir}" \
     -c "${config_file}" \
+    --additional-properties=packageCompany=KeyNetra,packageAuthors=KeyNetra,packageProjectUrl=https://github.com/keynetra/keynetra-client-csharp,packageLicenseExpression=Apache-2.0 \
     --type-mappings=null=object \
     --skip-validate-spec > "${log_file}" 2>&1; then
     log_success "${name} SDK generated successfully."

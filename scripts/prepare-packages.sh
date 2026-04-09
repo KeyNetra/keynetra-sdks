@@ -479,11 +479,19 @@ var decision = await client.Access.CheckAccessAsync(new AccessRequest {
   # Fix .csproj metadata
   if [ -f "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj" ]; then
     perl -i -pe "s|<RepositoryUrl>.*</RepositoryUrl>|<RepositoryUrl>${repo_url}.git</RepositoryUrl>|g" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+    if grep -q "<Company>" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"; then
+      perl -i -pe "s|<Company>.*</Company>|<Company>KeyNetra</Company>|g" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+    fi
     perl -i -pe "s|<Authors>.*</Authors>|<Authors>KeyNetra</Authors>|g" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
     if grep -q "<PackageProjectUrl>" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"; then
       perl -i -pe "s|<PackageProjectUrl>.*</PackageProjectUrl>|<PackageProjectUrl>${repo_url}</PackageProjectUrl>|g" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
     else
       REPO_URL="${repo_url}" perl -i -pe 's|(<RepositoryType>.*</RepositoryType>)|$1\n    <PackageProjectUrl>$ENV{REPO_URL}</PackageProjectUrl>|g' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+    fi
+    if grep -q "<PackageLicenseExpression>" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"; then
+      perl -i -pe 's|<PackageLicenseExpression>.*</PackageLicenseExpression>|<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>|g' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+    else
+      perl -i -pe 's/(<\/PackageProjectUrl>)/$1\n    <PackageLicenseExpression>Apache-2.0<\/PackageLicenseExpression>/g' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
     fi
     if ! grep -q "<PackageReadmeFile>" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"; then
       perl -i -pe 's/(<\/PackageTags>)/$1\n    <PackageReadmeFile>README.md<\/PackageReadmeFile>/g' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
