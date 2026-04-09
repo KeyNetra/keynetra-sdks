@@ -524,11 +524,16 @@ if [ -f "$CSHARP_PROJ" ]; then
   fi
 
   # Ensure NuGet README metadata is present exactly once.
-  perl -0i -pe 's@\n\s*<PackageReadmeFile>README.md</PackageReadmeFile>\s*@@g' "$CSHARP_PROJ"
-  perl -0i -pe 's@\n\s*<None Include="README.md" Pack="true" PackagePath="\\\\" ?/>\s*@@g' "$CSHARP_PROJ"
+  perl -0i -pe 's@(?:\s*<PackageReadmeFile>README.md</PackageReadmeFile>\s*)+@\n@g' "$CSHARP_PROJ"
+  perl -0i -pe 's@\n\s*<None Include="README.md" Pack="true"[^>]*/>\s*@@g' "$CSHARP_PROJ"
+  perl -0i -pe 's@\s*<ItemGroup>\s*</ItemGroup>\s*@@g' "$CSHARP_PROJ"
 
-  perl -0i -pe 's@</PropertyGroup>@    <PackageReadmeFile>README.md</PackageReadmeFile>\n  </PropertyGroup>@' "$CSHARP_PROJ"
-  perl -0i -pe 's@</Project>@  <ItemGroup>\n    <None Include="README.md" Pack="true" PackagePath="\\\\" />\n  </ItemGroup>\n</Project>@' "$CSHARP_PROJ"
+  if ! grep -q "<PackageReadmeFile>README.md</PackageReadmeFile>" "$CSHARP_PROJ"; then
+    perl -0i -pe 's@</PropertyGroup>@    <PackageReadmeFile>README.md</PackageReadmeFile>\n  </PropertyGroup>@' "$CSHARP_PROJ"
+  fi
+
+  perl -0i -pe 's@(?:\s*<ItemGroup>\s*<None Include="README.md" Pack="true" ?/>\s*</ItemGroup>\s*)+@\n@g' "$CSHARP_PROJ"
+  perl -0i -pe 's@</Project>@  <ItemGroup>\n    <None Include="README.md" Pack="true" />\n  </ItemGroup>\n</Project>@' "$CSHARP_PROJ"
 
   echo "CSharp .csproj metadata fixed."
 
