@@ -483,7 +483,7 @@ var decision = await client.Access.CheckAccessAsync(new AccessRequest {
     if grep -q "<PackageProjectUrl>" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"; then
       perl -i -pe "s|<PackageProjectUrl>.*</PackageProjectUrl>|<PackageProjectUrl>${repo_url}</PackageProjectUrl>|g" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
     else
-      perl -i -pe "s|(<RepositoryType>.*</RepositoryType>)|\\$1\n    <PackageProjectUrl>${repo_url}</PackageProjectUrl>|g" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+      REPO_URL="${repo_url}" perl -i -pe 's|(<RepositoryType>.*</RepositoryType>)|$1\n    <PackageProjectUrl>$ENV{REPO_URL}</PackageProjectUrl>|g' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
     fi
     if ! grep -q "<PackageReadmeFile>" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"; then
       perl -i -pe 's/(<\/PackageTags>)/$1\n    <PackageReadmeFile>README.md<\/PackageReadmeFile>/g' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
