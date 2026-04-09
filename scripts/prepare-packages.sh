@@ -523,25 +523,9 @@ if [ -f "$CSHARP_PROJ" ]; then
     perl -i -pe 's|(<PackageProjectUrl>.*</PackageProjectUrl>)|$1\n    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>|' "$CSHARP_PROJ"
   fi
 
-  # ---------------------------------------------------------
-  # README metadata
-  # ---------------------------------------------------------
-
-  if ! grep -q "<PackageReadmeFile>" "$CSHARP_PROJ"; then
-    if grep -q "<PackageTags>" "$CSHARP_PROJ"; then
-      perl -i -pe 's/(<\/PackageTags>)/$1\n    <PackageReadmeFile>README.md<\/PackageReadmeFile>/' "$CSHARP_PROJ"
-    else
-      perl -i -pe 's/(<\/PropertyGroup>)/    <PackageReadmeFile>README.md<\/PackageReadmeFile>\n$1/' "$CSHARP_PROJ"
-    fi
-  fi
-
-  # Remove duplicate README entries
-  perl -0i -pe 's@\n\s*<None Include="README\.md" Pack="true" PackagePath="\\\\"/>\s*@@g' "$CSHARP_PROJ"
-
-  # Ensure README packaged in NuGet
-  if ! grep -q '<None Include="README.md" Pack="true" PackagePath="\\\\"/>' "$CSHARP_PROJ"; then
-    perl -0i -pe 's@</Project>@  <ItemGroup>\n    <None Include="README.md" Pack="true" PackagePath="\\\\"/>\n  </ItemGroup>\n</Project>@' "$CSHARP_PROJ"
-  fi
+  # Remove README packing metadata to avoid NuGet markdown URI validation failures.
+  perl -0i -pe 's@\n\s*<PackageReadmeFile>README.md</PackageReadmeFile>\s*@@g' "$CSHARP_PROJ"
+  perl -0i -pe 's@\n\s*<None Include="README.md" Pack="true" PackagePath="\\\\"/>\s*@@g' "$CSHARP_PROJ"
 
   echo "CSharp .csproj metadata fixed."
 

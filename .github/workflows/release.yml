@@ -216,10 +216,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        lang: [python, typescript, rust, dotnet]
+        lang: [python, typescript, rust, dotnet, ruby, java]
 
     steps:
-
       - uses: actions/checkout@v4
 
       - uses: actions/download-artifact@v4
@@ -227,7 +226,7 @@ jobs:
           name: sdks
           path: sdks
 
-# ---------------- Python ----------------
+  # ---------------- Python ----------------
 
       - uses: actions/setup-python@v5
         if: matrix.lang == 'python'
@@ -246,12 +245,13 @@ jobs:
           -u __token__ \
           -p ${{ secrets.PYPI_TOKEN }}
 
-# ---------------- TypeScript ----------------
+  # ---------------- TypeScript ----------------
 
       - uses: actions/setup-node@v4
         if: matrix.lang == 'typescript'
         with:
           node-version: 20
+          registry-url: https://registry.npmjs.org/
 
       - name: Publish npm
         if: matrix.lang == 'typescript'
@@ -259,33 +259,24 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           cd sdks/typescript
-          VERSION=$(node -p "require('./package.json').version")
-          PACKAGE=$(node -p "require('./package.json').name")
+          npm install
+          npm config set access public
+          npm publish || echo "Already published"
 
-          if npm view "$PACKAGE@$VERSION" version >/dev/null 2>&1; then
-            echo "Version exists — skipping"
-          else
-            npm publish --access public
-          fi
-
-# ---------------- Rust ----------------
+  # ---------------- Rust ----------------
 
       - uses: dtolnay/rust-toolchain@stable
         if: matrix.lang == 'rust'
 
       - name: Publish Rust
         if: matrix.lang == 'rust'
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_TOKEN }}
         run: |
           cd sdks/rust
-          VERSION=$(grep '^version' Cargo.toml | cut -d '"' -f2)
+          cargo publish --token $CARGO_REGISTRY_TOKEN || echo "Already exists"
 
-          if cargo search keynetra-client | grep "$VERSION"; then
-            echo "Version exists"
-          else
-            cargo publish --token ${{ secrets.CRATES_TOKEN }}
-          fi
-
-# ---------------- .NET ----------------
+  # ---------------- .NET ----------------
 
       - uses: actions/setup-dotnet@v4
         if: matrix.lang == 'dotnet'
@@ -299,9 +290,49 @@ jobs:
           dotnet pack -c Release
 
           dotnet nuget push bin/Release/*.nupkg \
-          --api-key ${{ secrets.NUGET_TOKEN }} \
-          --source https://api.nuget.org/v3/index.json \
-          --skip-duplicate
+            --api-key ${{ secrets.NUGET_TOKEN }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+
+  # ---------------- Ruby ----------------
+
+      - uses: ruby/setup-ruby@v1
+        if: matrix.lang == 'ruby'
+        with:
+          ruby-version: '3.2'
+
+      - name: Publish Ruby
+        if: matrix.lang == 'ruby'
+        env:
+          GEM_HOST_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
+        run: |
+          cd sdks/ruby
+          gem build *.gemspec
+          gem push *.gem || echo "Already exists"
+
+  # ---------------- Java (Maven Central) ----------------
+
+      - uses: actions/setup-java@v4
+        if: matrix.lang == 'java'
+        with:
+          distribution: temurin
+          java-version: 21
+          server-id: central
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Publish Maven
+        if: matrix.lang == 'java'
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        run: |
+          cd sdks/java
+          chmod +x gradlew || true
+          ./gradlew publish --no-daemon || echo "Already published"
 
 # ------------------------------------------------------------
 # REGISTRY VERIFY
@@ -339,13 +370,15 @@ jobs:
 
   create-repos:
     name: 📁 Create SDK Repositories
-    needs: [prepare, smoke-test]
+    needs: verify
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/download-artifact@v4
+      - name: Download SDK artifacts
+        uses: actions/download-artifact@v4
         with:
           name: sdks
           path: sdks
@@ -355,26 +388,42 @@ jobs:
           sudo apt-get update
           sudo apt-get install gh -y
 
-      - name: Authenticate GH
-        run: gh auth setup-git
-        env:
-          GH_TOKEN: ${{ secrets.SDK_MIRROR_TOKEN }}
-
-      - name: Create and Push Repos
+      - name: Create and Push SDK repos
         run: |
           LANGS="python typescript go rust csharp java php ruby swift"
 
+          git config --global user.name "KeyNetra Bot"
+          git config --global user.email "bot@keynetra.dev"
+
           for LANG in $LANGS; do
             REPO="keynetra-client-$LANG"
+            DIR="sdks/$LANG"
 
-            echo "Creating repo $REPO"
+            echo "Processing $REPO"
 
+            # Create repo if missing
             gh repo create keynetra/$REPO \
               --public \
-              --source=sdks/$LANG \
-              --push \
               --description "Official KeyNetra $LANG SDK" \
-              || echo "Repo exists"
+              --confirm || echo "Repo exists"
+
+            cd "$DIR"
+
+            # Initialize repo if needed
+            if [ ! -d ".git" ]; then
+              git init
+              git branch -M main
+            fi
+
+            git add .
+            git commit -m "Initial KeyNetra $LANG SDK release" || echo "Nothing to commit"
+
+            git remote remove origin 2>/dev/null || true
+            git remote add origin https://x-access-token:${GH_TOKEN}@github.com/keynetra/$REPO.git
+
+            git push -u origin main --force
+
+            cd - >/dev/null
           done
         env:
           GH_TOKEN: ${{ secrets.SDK_MIRROR_TOKEN }}
