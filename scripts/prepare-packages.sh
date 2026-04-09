@@ -523,9 +523,12 @@ if [ -f "$CSHARP_PROJ" ]; then
     perl -i -pe 's|(<PackageProjectUrl>.*</PackageProjectUrl>)|$1\n    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>|' "$CSHARP_PROJ"
   fi
 
-  # Remove README packing metadata to avoid NuGet markdown URI validation failures.
+  # Ensure NuGet README metadata is present exactly once.
   perl -0i -pe 's@\n\s*<PackageReadmeFile>README.md</PackageReadmeFile>\s*@@g' "$CSHARP_PROJ"
-  perl -0i -pe 's@\n\s*<None Include="README.md" Pack="true" PackagePath="\\\\"/>\s*@@g' "$CSHARP_PROJ"
+  perl -0i -pe 's@\n\s*<None Include="README.md" Pack="true" PackagePath="\\\\" ?/>\s*@@g' "$CSHARP_PROJ"
+
+  perl -0i -pe 's@</PropertyGroup>@    <PackageReadmeFile>README.md</PackageReadmeFile>\n  </PropertyGroup>@' "$CSHARP_PROJ"
+  perl -0i -pe 's@</Project>@  <ItemGroup>\n    <None Include="README.md" Pack="true" PackagePath="\\\\" />\n  </ItemGroup>\n</Project>@' "$CSHARP_PROJ"
 
   echo "CSharp .csproj metadata fixed."
 

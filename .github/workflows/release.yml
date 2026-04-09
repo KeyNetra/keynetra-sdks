@@ -287,9 +287,9 @@ jobs:
         if: matrix.lang == 'dotnet'
         run: |
           cd sdks/csharp
-          dotnet pack -c Release
+          dotnet pack src/KeyNetra.Client/KeyNetra.Client.csproj -c Release
 
-          dotnet nuget push bin/Release/*.nupkg \
+          dotnet nuget push src/KeyNetra.Client/bin/Release/*.nupkg \
             --api-key ${{ secrets.NUGET_TOKEN }} \
             --source https://api.nuget.org/v3/index.json \
             --skip-duplicate
