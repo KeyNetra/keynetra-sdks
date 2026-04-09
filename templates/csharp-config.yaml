@@ -1,0 +1,13 @@
+packageName: KeyNetra.Client
+packageVersion: 0.1.1
+packageCompany: KeyNetra
+packageAuthors: KeyNetra
+packageTitle: KeyNetra.Client
+targetFramework: net8.0
+library: restsharp
+nullableReferenceTypes: true
+optionalProjectFile: false
+packageTags: "keynetra;authorization;authz;permissions;sdk"
+packageDescription: "Official C# SDK for the KeyNetra authorization platform. KeyNetra provides high-performance, distributed authorization as a service."
+packageProjectUrl: "https://github.com/keynetra/keynetra-client-csharp"
+packageLicenseExpression: "Apache-2.0"

@@ -1,0 +1,16 @@
+groupId: io.keynetra
+artifactId: keynetra-client
+artifactVersion: 0.1.1
+invokerPackage: io.keynetra.client
+apiPackage: io.keynetra.client.api
+modelPackage: io.keynetra.client.model
+library: okhttp-gson
+hideGenerationTimestamp: true
+developerName: Sainath Sapa
+developerEmail: business.keynetra@gmail.com
+developerOrganization: KeyNetra
+developerOrganizationUrl: https://keynetra.com
+scmConnection: scm:git:git://github.com/keynetra/keynetra-client-java.git
+scmDeveloperConnection: scm:git:ssh://github.com:keynetra/keynetra-client-java.git
+scmUrl: https://github.com/keynetra/keynetra-client-java
+artifactDescription: Official Java Client SDK for the KeyNetra authorization platform.

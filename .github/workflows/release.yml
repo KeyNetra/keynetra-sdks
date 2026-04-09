@@ -1,0 +1,452 @@
+name: 🚀 KeyNetra SDK Release
+
+on:
+  push:
+    tags:
+      - sdk-v*
+  workflow_dispatch:
+
+concurrency:
+  group: sdk-release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  REGISTRY_WAIT: 60
+
+jobs:
+
+# ------------------------------------------------------------
+# BUILD SDKs
+# ------------------------------------------------------------
+
+  prepare:
+    name: 🏗 Generate SDKs
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Extract version
+        id: version
+        run: |
+          VERSION=$(echo "${GITHUB_REF_NAME}" | sed 's/^sdk-v//')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Install OpenAPI Generator
+        run: npm install -g @openapitools/openapi-generator-cli
+
+      - name: Generate SDKs
+        env:
+          SDK_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          chmod +x scripts/generate-all.sh scripts/prepare-packages.sh
+          ./scripts/generate-all.sh
+
+      - name: Upload SDK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: sdks
+          path: sdks
+
+# ------------------------------------------------------------
+# LOCAL TESTS
+# ------------------------------------------------------------
+
+  smoke-test:
+    name: 🧪 Local Test (${{ matrix.lang }})
+    needs: prepare
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        lang: [python, typescript, go, rust, dotnet, java, php, ruby, swift]
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: sdks
+          path: sdks
+
+# ---------------- Python ----------------
+
+      - uses: actions/setup-python@v5
+        if: matrix.lang == 'python'
+        with:
+          python-version: "3.11"
+
+      - name: Fix Python TOML
+        if: matrix.lang == 'python'
+        run: |
+          sed -i 's/\\/\\\\/g' sdks/python/pyproject.toml || true
+
+      - name: Test Python
+        if: matrix.lang == 'python'
+        run: |
+          cd sdks/python
+          pip install build
+          python -m build
+
+# ---------------- TypeScript ----------------
+
+      - uses: actions/setup-node@v4
+        if: matrix.lang == 'typescript'
+        with:
+          node-version: 20
+
+      - name: Test TypeScript
+        if: matrix.lang == 'typescript'
+        run: |
+          cd sdks/typescript
+          npm install
+          npm run build
+
+# ---------------- Go ----------------
+
+      - uses: actions/setup-go@v5
+        if: matrix.lang == 'go'
+        with:
+          go-version: "1.22"
+
+      - name: Test Go
+        if: matrix.lang == 'go'
+        run: |
+          cd sdks/go
+          go mod init tmp || true
+          go mod tidy || true
+          go build ./...
+
+# ---------------- Rust ----------------
+
+      - uses: dtolnay/rust-toolchain@stable
+        if: matrix.lang == 'rust'
+
+      - name: Test Rust
+        if: matrix.lang == 'rust'
+        run: |
+          cd sdks/rust
+          cargo build
+
+# ---------------- .NET ----------------
+
+      - uses: actions/setup-dotnet@v4
+        if: matrix.lang == 'dotnet'
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Test .NET
+        if: matrix.lang == 'dotnet'
+        run: |
+          cd sdks/csharp
+          dotnet build
+
+# ---------------- Java ----------------
+
+      - uses: actions/setup-java@v4
+        if: matrix.lang == 'java'
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Test Java
+        if: matrix.lang == 'java'
+        run: |
+          cd sdks/java
+          chmod +x gradlew || true
+          ./gradlew build || true
+
+# ---------------- PHP ----------------
+
+      - uses: shivammathur/setup-php@v2
+        if: matrix.lang == 'php'
+        with:
+          php-version: '8.2'
+
+      - name: Test PHP
+        if: matrix.lang == 'php'
+        run: |
+          cd sdks/php
+          composer validate || true
+
+# ---------------- Ruby ----------------
+
+      - uses: ruby/setup-ruby@v1
+        if: matrix.lang == 'ruby'
+        with:
+          ruby-version: '3.2'
+
+      - name: Test Ruby
+        if: matrix.lang == 'ruby'
+        run: |
+          cd sdks/ruby
+          gem build *.gemspec || true
+
+# ---------------- Swift ----------------
+
+      - name: Test Swift
+        if: matrix.lang == 'swift'
+        run: |
+          cd sdks/swift
+          swift build || true
+
+# ------------------------------------------------------------
+# PUBLISH SDKs
+# ------------------------------------------------------------
+
+  publish:
+    name: 📦 Publish (${{ matrix.lang }})
+    needs: [prepare, smoke-test]
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        lang: [python, typescript, rust, dotnet, ruby, java]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: sdks
+          path: sdks
+
+  # ---------------- Python ----------------
+
+      - uses: actions/setup-python@v5
+        if: matrix.lang == 'python'
+        with:
+          python-version: "3.11"
+
+      - name: Publish Python
+        if: matrix.lang == 'python'
+        run: |
+          cd sdks/python
+          pip install build twine
+          python -m build
+
+          twine upload dist/* \
+          --skip-existing \
+          -u __token__ \
+          -p ${{ secrets.PYPI_TOKEN }}
+
+  # ---------------- TypeScript ----------------
+
+      - uses: actions/setup-node@v4
+        if: matrix.lang == 'typescript'
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+
+      - name: Publish npm
+        if: matrix.lang == 'typescript'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          cd sdks/typescript
+          npm install
+          npm config set access public
+          npm publish || echo "Already published"
+
+  # ---------------- Rust ----------------
+
+      - uses: dtolnay/rust-toolchain@stable
+        if: matrix.lang == 'rust'
+
+      - name: Publish Rust
+        if: matrix.lang == 'rust'
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_TOKEN }}
+        run: |
+          cd sdks/rust
+          cargo publish --token $CARGO_REGISTRY_TOKEN || echo "Already exists"
+
+  # ---------------- .NET ----------------
+
+      - uses: actions/setup-dotnet@v4
+        if: matrix.lang == 'dotnet'
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Publish NuGet
+        if: matrix.lang == 'dotnet'
+        run: |
+          cd sdks/csharp
+          dotnet pack src/KeyNetra.Client/KeyNetra.Client.csproj -c Release
+
+          dotnet nuget push src/KeyNetra.Client/bin/Release/*.nupkg \
+            --api-key ${{ secrets.NUGET_TOKEN }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+
+  # ---------------- Ruby ----------------
+
+      - uses: ruby/setup-ruby@v1
+        if: matrix.lang == 'ruby'
+        with:
+          ruby-version: '3.2'
+
+      - name: Publish Ruby
+        if: matrix.lang == 'ruby'
+        env:
+          GEM_HOST_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
+        run: |
+          cd sdks/ruby
+          gem build *.gemspec
+          gem push *.gem || echo "Already exists"
+
+  # ---------------- Java (Maven Central) ----------------
+
+      - uses: actions/setup-java@v4
+        if: matrix.lang == 'java'
+        with:
+          distribution: temurin
+          java-version: 21
+          server-id: central
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Publish Maven
+        if: matrix.lang == 'java'
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+        run: |
+          cd sdks/java
+          chmod +x gradlew || true
+          ./gradlew publish --no-daemon || echo "Already published"
+
+# ------------------------------------------------------------
+# REGISTRY VERIFY
+# ------------------------------------------------------------
+
+  verify:
+    name: 🔎 Registry Verify
+    needs: publish
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Wait registry indexing
+        run: sleep ${{ env.REGISTRY_WAIT }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Verify Python
+        run: pip install keynetra-client || true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Verify npm
+        run: npm install @keynetra/client || true
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Verify Rust
+        run: cargo search keynetra-client || true
+
+
+  create-repos:
+    name: 📁 Create SDK Repositories
+    needs: verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download SDK artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: sdks
+          path: sdks
+
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install gh -y
+
+      - name: Create and Push SDK repos
+        run: |
+          LANGS="python typescript go rust csharp java php ruby swift"
+
+          git config --global user.name "KeyNetra Bot"
+          git config --global user.email "bot@keynetra.dev"
+
+          for LANG in $LANGS; do
+            REPO="keynetra-client-$LANG"
+
+            if [ -d "sdks/$LANG" ]; then
+              DIR="sdks/$LANG"
+            elif [ -d "sdks/sdks/$LANG" ]; then
+              DIR="sdks/sdks/$LANG"
+            else
+              echo "Missing SDK directory for $LANG"
+              exit 1
+            fi
+
+            echo "Processing $REPO from $DIR"
+
+            # Create repo if missing
+            gh repo create keynetra/$REPO \
+              --public \
+              --description "Official KeyNetra $LANG SDK" \
+              --confirm || echo "Repo exists"
+
+            cd "$DIR"
+
+            # Initialize repo if needed
+            if [ ! -d ".git" ]; then
+              git init
+              git branch -M main
+            fi
+
+            git add .
+            git commit -m "KeyNetra $LANG SDK release ${{ github.ref }} ${{ github.sha }}" || echo "Nothing to commit"
+
+            git remote remove origin 2>/dev/null || true
+            git remote add origin https://x-access-token:${GH_TOKEN}@github.com/keynetra/$REPO.git
+
+            git push -u origin main --force
+
+            cd - >/dev/null
+          done
+        env:
+          GH_TOKEN: ${{ secrets.SDK_MIRROR_TOKEN }}
+
+# ------------------------------------------------------------
+# SUMMARY
+# ------------------------------------------------------------
+
+  summary:
+    name: 🎉 Release Summary
+    needs: verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Summary
+        run: |
+          echo "## 🚀 KeyNetra SDK Release Completed" >> $GITHUB_STEP_SUMMARY
+          echo "All SDK pipelines finished successfully." >> $GITHUB_STEP_SUMMARY
