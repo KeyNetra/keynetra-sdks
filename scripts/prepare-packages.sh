@@ -480,10 +480,17 @@ var decision = await client.Access.CheckAccessAsync(new AccessRequest {
   if [ -f "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj" ]; then
     perl -i -pe "s|<RepositoryUrl>.*</RepositoryUrl>|<RepositoryUrl>${repo_url}.git</RepositoryUrl>|g" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
     perl -i -pe "s|<Authors>.*</Authors>|<Authors>KeyNetra</Authors>|g" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+    if grep -q "<PackageProjectUrl>" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"; then
+      perl -i -pe "s|<PackageProjectUrl>.*</PackageProjectUrl>|<PackageProjectUrl>${repo_url}</PackageProjectUrl>|g" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+    else
+      perl -i -pe "s|(<RepositoryType>.*</RepositoryType>)|$1\n    <PackageProjectUrl>${repo_url}</PackageProjectUrl>|g" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+    fi
     if ! grep -q "<PackageReadmeFile>" "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"; then
       perl -i -pe 's/(<\/PackageTags>)/$1\n    <PackageReadmeFile>README.md<\/PackageReadmeFile>/g' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
-      # Also need to include the README file in the package
-      perl -i -pe 's/(<\/ItemGroup>)/    <None Include=\"README.md\" Pack=\"true\" PackagePath=\"\\\\\"\/>\n$1/g' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+    fi
+    perl -0i -pe 's@\n\s*<None Include="README\.md" Pack="true" PackagePath="\\\\"/>\s*@@g' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
+    if ! grep -q '<None Include="README.md" Pack="true" PackagePath="\\\\"/>' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"; then
+      perl -0i -pe 's@</Project>@  <ItemGroup>\n    <None Include="README.md" Pack="true" PackagePath="\\\\"/>\n  </ItemGroup>\n</Project>@' "${ROOT_DIR}/sdks/csharp/src/KeyNetra.Client/KeyNetra.Client.csproj"
     fi
   fi
 
@@ -495,13 +502,41 @@ using KeyNetra.Client.Client;
 
 public sealed class KeyNetraClient
 {
+    /// <summary>
+    /// Access control and authorization operations.
+    /// </summary>
     public AccessApi Access { get; }
+
+    /// <summary>
+    /// Authentication and identity operations.
+    /// </summary>
     public AuthApi Auth { get; }
+
+    /// <summary>
+    /// Development and testing operations.
+    /// </summary>
     public DevApi Dev { get; }
+
+    /// <summary>
+    /// Service health and readiness operations.
+    /// </summary>
     public HealthApi Health { get; }
+
+    /// <summary>
+    /// Tenant, policy, and role management operations.
+    /// </summary>
     public ManagementApi Management { get; }
+
+    /// <summary>
+    /// Playground and interactive helper operations.
+    /// </summary>
     public PlaygroundApi Playground { get; }
 
+    /// <summary>
+    /// Creates a unified KeyNetra client for all generated API groups.
+    /// </summary>
+    /// <param name="baseUrl">The KeyNetra API base URL.</param>
+    /// <param name="apiKey">The API key used for both API key and bearer authentication.</param>
     public KeyNetraClient(string baseUrl, string apiKey)
     {
         var configuration = new Configuration
