@@ -492,7 +492,7 @@ if [ -f "$CSHARP_PROJ" ]; then
   if grep -q "<RepositoryUrl>" "$CSHARP_PROJ"; then
     perl -i -pe "s|<RepositoryUrl>.*</RepositoryUrl>|<RepositoryUrl>${repo_url}</RepositoryUrl>|g" "$CSHARP_PROJ"
   else
-    REPO_URL="${repo_url}" perl -i -pe 's|(<PropertyGroup>)|$1\n    <RepositoryUrl>'"$REPO_URL"'</RepositoryUrl>|' "$CSHARP_PROJ"
+    REPO_URL="${repo_url}" perl -i -pe 's|(<PropertyGroup>)|$1\n    <RepositoryUrl>$ENV{REPO_URL}</RepositoryUrl>|' "$CSHARP_PROJ"
   fi
 
   # Company
@@ -513,7 +513,7 @@ if [ -f "$CSHARP_PROJ" ]; then
   if grep -q "<PackageProjectUrl>" "$CSHARP_PROJ"; then
     perl -i -pe "s|<PackageProjectUrl>.*</PackageProjectUrl>|<PackageProjectUrl>${repo_url}</PackageProjectUrl>|g" "$CSHARP_PROJ"
   else
-    REPO_URL="${repo_url}" perl -i -pe 's|(<RepositoryUrl>.*</RepositoryUrl>)|$1\n    <PackageProjectUrl>'"$REPO_URL"'</PackageProjectUrl>|' "$CSHARP_PROJ"
+    REPO_URL="${repo_url}" perl -i -pe 's|(<RepositoryUrl>.*</RepositoryUrl>)|$1\n    <PackageProjectUrl>$ENV{REPO_URL}</PackageProjectUrl>|' "$CSHARP_PROJ"
   fi
 
   # License
